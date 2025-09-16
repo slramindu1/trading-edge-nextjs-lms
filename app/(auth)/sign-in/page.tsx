@@ -18,14 +18,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      toast.error("Please Enter The Email & Password");
+    if (!email) {
+      toast.error("Please Enter The Email Address");
+      return;
+    }
+
+    if (!password) {
+      toast.error("Please Enter The Password");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error("Please Enter Valid Email Address ");
+      toast.error("Please Enter Valid Email Address");
       return;
     }
 
@@ -45,15 +50,16 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("Login Succssfull!");
-        // Redirect / Dashboard
+        toast.success("Login Successful!");
+        // Redirect to dashboard
       } else {
-        toast.error(data.message || "Login fail");
+        toast.error(data.message || "Login Failed");
       }
     } catch (err) {
       toast.error("Server error, Please Try Again Later");
     }
   };
+
   return (
     <Card>
       <CardHeader>
@@ -79,7 +85,9 @@ export default function LoginPage() {
             placeholder="******"
           />
         </div>
-        <Button onClick={handleLogin} className="hover:cursor-pointer">Login</Button>
+        <Button onClick={handleLogin} className="hover:cursor-pointer">
+          Login
+        </Button>
       </CardContent>
     </Card>
   );
