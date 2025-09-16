@@ -11,30 +11,49 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GithubIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please Enter The Email & Password");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please Enter Valid Email Address ");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    // 🟢 Login API call
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
-        localStorage.setItem("token", data.token);
-        alert("Login successful!");
+        toast.success("Login Succssfull!");
+        // Redirect / Dashboard
       } else {
-        alert(data.message);
+        toast.error(data.message || "Login fail");
       }
     } catch (err) {
-      console.error(err);
+      toast.error("Server error, Please Try Again Later");
     }
   };
-
   return (
     <Card>
       <CardHeader>
@@ -43,30 +62,24 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="grid gap-3">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              placeholder="m@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+          <Label>Email</Label>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="m@example.com"
+          />
         </div>
         <div className="grid gap-3">
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              placeholder="******"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <Button onClick={handleLogin} className="hover:cursor-pointer">
-            Login
-          </Button>
+          <Label>Password</Label>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="******"
+          />
         </div>
+        <Button onClick={handleLogin} className="hover:cursor-pointer">Login</Button>
       </CardContent>
     </Card>
   );

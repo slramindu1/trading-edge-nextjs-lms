@@ -5,10 +5,14 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import Logo from "@/app/logo-white.png";
 import Image from "next/image";
+import { Toaster } from "sonner"; // ← Add this line
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative flex min-h-svh flex-col items-center justify-center">
+      {/* Sonner Toaster */}
+      <Toaster position="top-right" />
+
       <Link
         href="/"
         className={cn(
