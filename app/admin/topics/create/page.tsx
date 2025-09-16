@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"; // Changed from @radix-ui/react-select
+import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 
 export default function CourseCreationPage() {
   const form = useForm({
@@ -120,11 +121,13 @@ export default function CourseCreationPage() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
+                      <RichTextEditor field={field}/>
+
+                      {/* <Textarea
                         placeholder="Enter course description"
                         {...field}
                         className="min-h-[120px]"
-                      />
+                      /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
