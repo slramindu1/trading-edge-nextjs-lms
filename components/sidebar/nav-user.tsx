@@ -26,7 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { HomeIcon, Tv2 } from "lucide-react";
+import { BookOpen, HomeIcon, Layers, ListChecks, Tv2 } from "lucide-react";
 
 export function NavUser({
   user,
@@ -84,23 +84,26 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={"/"}>
-                  <HomeIcon />
-                  HomePage
+                <Link href={"/admin/lessons/"}>
+                  <BookOpen className="h-4 w-4" />
+                  Lessons
                 </Link>
               </DropdownMenuItem>
+
               <DropdownMenuItem asChild>
-                <Link href={"/admin"}>
-                  <IconDashboard />
-                  Dashboard
+                <Link href={"/admin/topics/"}>
+                  <Layers className="h-4 w-4" />
+                   Topics
                 </Link>
               </DropdownMenuItem>
+
               <DropdownMenuItem asChild>
-                <Link href={"/admin/courses"}>
-                  <Tv2 />
-                  Courses
+                <Link href={"/admin/subtopics/"}>
+                  <ListChecks className="h-4 w-4" />
+                   SubTopics
                 </Link>
               </DropdownMenuItem>
+
               <DropdownMenuItem>
                 <IconNotification />
                 Notifications

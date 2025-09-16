@@ -36,6 +36,7 @@ export function NavMain({
                 <IconCirclePlusFilled />
                 <span>Quick Create</span>
               </Link>
+              
             </SidebarMenuButton>
             {/* <Button
               size="icon"

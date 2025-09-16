@@ -13,16 +13,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  email            String   @id
-  fname            String? 
-  lname            String? 
+  id               String   @id @default(uuid())
+  email            String   @unique
+  fname            String?
+  lname            String?
   password         String
-  mobile           String? 
+  mobile           String?
   joined_date      DateTime @default(now())
-  verification_code String? 
+  verification_code String?
   gender_id        Int
   user_type_id     Int
   status_id        Int
   About_Me         String? @db.VarChar(500)
+}
+
+
+model Section{
+  id String @id @default(uuid())
+  title String
+  description String
+  dateCreated DateTime @default(now())
+  fileKey String
+  slug String @unique
+  status CourseStatus @default(Draft)
+}
+
+enum CourseStatus{
+  Draft
+  Published
+  Archived
 }

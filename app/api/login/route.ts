@@ -13,11 +13,16 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-    if (user.password !== password) return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    if (user.password !== password) {
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    }
 
-    return NextResponse.json({ message: "Login successful!" });
+    // Return user_type_id
+    return NextResponse.json({ message: "Login successful!", user_type_id: user.user_type_id });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error, please try again later" }, { status: 500 });

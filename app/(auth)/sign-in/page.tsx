@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { GithubIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -51,11 +50,18 @@ export default function LoginPage() {
 
       if (res.ok) {
         toast.success("Login Successful!");
-        // Redirect to dashboard
+
+        // Redirect based on user_type_id
+        if (data.user_type_id === 1) {
+          window.location.href = "#"; // Regular user
+        } else if (data.user_type_id === 2) {
+          window.location.href = "/admin"; // Admin
+        }
       } else {
-        toast.error(data.message || "Login Failed");
+        toast.error(data.error || "Login Failed");
       }
     } catch (err) {
+      console.error(err);
       toast.error("Server error, Please Try Again Later");
     }
   };
@@ -64,7 +70,7 @@ export default function LoginPage() {
     <Card>
       <CardHeader>
         <CardTitle className="text-xl"> Welcome back! </CardTitle>
-        <CardDescription>Login with YourGithub Email Account</CardDescription>
+        <CardDescription>Login with Your Github Email Account</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="grid gap-3">
