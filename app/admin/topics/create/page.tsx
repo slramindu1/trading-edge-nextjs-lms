@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"; // Changed from @radix-ui/react-select
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
+import { Uploader } from "@/components/file-uploader/Uploader";
 
 export default function CourseCreationPage() {
   const form = useForm({
@@ -142,7 +143,7 @@ export default function CourseCreationPage() {
                   <FormItem>
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <Input placeholder="Thumbnail url" {...field} />
+                      <Uploader/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
