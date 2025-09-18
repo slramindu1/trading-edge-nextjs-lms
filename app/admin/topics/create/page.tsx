@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"; // Changed from @radix-ui/react-select
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
-import { Uploader } from "@/components/file-uploader/Uploader";
+import Uploader from "@/components/file-uploader/Uploader";
 
 export default function CourseCreationPage() {
   const form = useForm({
@@ -122,7 +122,7 @@ export default function CourseCreationPage() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <RichTextEditor field={field}/>
+                      <RichTextEditor field={field} />
 
                       {/* <Textarea
                         placeholder="Enter course description"
@@ -143,13 +143,17 @@ export default function CourseCreationPage() {
                   <FormItem>
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <Uploader/>
+                      <Uploader
+                        onFileUpload={(path) => {
+                          field.onChange(path); // set the file path for zod validation
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               {/* Status Select Field - Fixed */}
               <FormField
                 control={form.control}
@@ -157,7 +161,10 @@ export default function CourseCreationPage() {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl className="w-full">
                         <SelectTrigger>
                           <SelectValue placeholder="Select status" />
@@ -175,10 +182,11 @@ export default function CourseCreationPage() {
                   </FormItem>
                 )}
               />
-          <Button> Create Course <PlusIcon className="ml-1" size={16}/> </Button>
-
+              <Button>
+                {" "}
+                Create Course <PlusIcon className="ml-1" size={16} />{" "}
+              </Button>
             </form>
-            
           </Form>
         </CardContent>
       </Card>

@@ -1,194 +1,158 @@
-"use client";
-import { useCallback, useState } from "react";
-import { FileRejection, useDropzone } from "react-dropzone";
-import { Card, CardContent } from "../ui/card";
-import { cn } from "@/lib/utils";
-import { RenderEmptyState, RenderErrorState } from "./RenderState";
-import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
+"use client"
+import type React from "react"
+import { useState } from "react"
+import { RenderEmptyState, RenderErrorState } from "@/components/render-empty-state"
+import { X } from "lucide-react"
+import { toast } from "sonner"
 
-interface UploaderState {
-  id: string | null;
-  file: File | null;
-  uploading: boolean;
-  progress: number;
-  key?: string;
-  isDeleting: boolean;
-  error: boolean;
-  objectUrl?: string;
-  fileType: "image" | "video";
+interface UploadedFile {
+  name: string
+  size: number
+  type: string
+  url?: string
 }
 
-export function Uploader() {
-  const [fileState, setFileState] = useState<UploaderState>({
-    error: false,
-    file: null,
-    id: null,
-    progress: 0,
-    uploading: false,
-    isDeleting: false,
-    fileType: "image",
-  });
+interface UploaderProps {
+  onFileUpload?: (filePath: string) => void // <-- new prop
+}
 
-  async function uploadFile(file: File) {
-    setFileState((prev) => ({
-      ...prev,
-      uploading: true,
-      progress: 0,
-    }));
+export default function Uploader({ onFileUpload }: UploaderProps) {
+  const [isDragActive, setIsDragActive] = useState(false)
+  const [showError, setShowError] = useState(false)
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "image/svg+xml"]
+
+  // Generate random name like tradingedge57541
+  const generateFileName = (original: File) => {
+    const ext = original.name.split(".").pop()
+    const randomId = Math.floor(10000 + Math.random() * 90000) // 5-digit number
+    return `tradingedge${randomId}.${ext}`
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => { e.preventDefault(); setIsDragActive(true) }
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragActive(false) }
+  const handleDragOver = (e: React.DragEvent) => e.preventDefault()
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragActive(false)
+    const files = Array.from(e.dataTransfer.files)
+    handleFiles(files)
+  }
+
+  const handleFiles = async (files: File[]) => {
+    if (uploadedFiles.length > 0) {
+      toast.error("You can only upload one file. Remove the existing file first.")
+      return
+    }
+
+    const file = files[0]
+    if (!file) return
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Only image files (JPG, JPEG, PNG, WEBP, SVG) are allowed.")
+      return
+    }
+
+    setIsUploading(true)
+    setShowError(false)
 
     try {
-      // presigned URL request
-      const preSignedResponse = await fetch("/api/s3/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          contentType: file.type,
-          size: file.size,
-          isImage: true,
-        }),
-      });
+      const renamedFile = generateFileName(file)
+      const formData = new FormData()
+      formData.append("file", file, renamedFile)
 
-      if (!preSignedResponse.ok) {
-        toast.error("Failed to Get Presigned Url");
-        setFileState((prev) => ({
-          ...prev,
-          uploading: false,
-          progress: 0,
-          error: true,
-        }));
-        return;
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!res.ok) throw new Error("Upload failed")
+
+      const data = await res.json()
+
+      const uploaded = {
+        name: renamedFile,
+        size: file.size,
+        type: file.type,
+        url: data.path,
       }
 
-      const { presignedUrl, key } = await preSignedResponse.json();
-      console.log("Presigned URL:", presignedUrl);
-      console.log("S3 Key:", key);
+      setUploadedFiles([uploaded])
+      toast.success("File uploaded successfully!")
 
-      await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentageCompleted = (event.loaded / event.total) * 100;
-            setFileState((prev) => ({
-              ...prev,
-              progress: Math.round(percentageCompleted),
-            }));
-          }
-        };
-
-        xhr.onload = () => {
-          // FIX: use OR instead of AND
-          if (xhr.status === 200 || xhr.status === 204) {
-            setFileState((prev) => ({
-              ...prev,
-              progress: 100,
-              uploading: false,
-              key: key,
-            }));
-            toast.success("File Uploaded Successfully");
-            resolve();
-          } else {
-            reject(new Error("Upload Failed.."));
-          }
-        };
-
-        xhr.onerror = () => {
-          reject(new Error("Upload Failed"));
-        };
-
-        xhr.open("PUT", presignedUrl);
-        xhr.setRequestHeader("Content-Type", file.type); // must match backend ContentType
-        xhr.send(file);
-      });
-    } catch {
-      toast.error("Something Went Wrong");
-      setFileState((prev) => ({
-        ...prev,
-        progress: 0,
-        error: true,
-        uploading: false,
-      }));
+      // Pass uploaded file path to parent form for validation
+      onFileUpload?.(uploaded.url || "")
+    } catch (error) {
+      console.error("Upload failed:", error)
+      setShowError(true)
+      toast.error("File upload failed. Please try again.")
+      onFileUpload?.("") // reset file key in form
+    } finally {
+      setIsUploading(false)
     }
   }
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-      if (acceptedFiles.length > 1) {
-        toast.error("Too many files selected. Max is 1");
-        return;
-      }
-
-      if (acceptedFiles.length === 1) {
-        const file = acceptedFiles[0];
-
-        setFileState({
-          file: file,
-          uploading: false,
-          progress: 0,
-          objectUrl: URL.createObjectURL(file),
-          id: uuidv4(),
-          isDeleting: false,
-          error: false,
-          fileType: "image",
-        });
-
-        console.log("Selected file:", file);
-        uploadFile(file); // auto upload after select
-      }
-
-      if (fileRejections.length) {
-        fileRejections.forEach((rejection) => {
-          rejection.errors.forEach((err) => {
-            if (err.code === "file-too-large") {
-              toast.error("File size exceeded 5MB");
-            }
-            if (err.code === "too-many-files") {
-              toast.error("Too many files selected. Max is 1");
-            }
-          });
-        });
-      }
-    },
-    []
-  );
-
-  function renderContent(isDragActive: boolean) {
-    if (fileState.uploading) {
-      return <h1>Uploading... {fileState.progress}%</h1>;
-    }
-    if (fileState.error) {
-      return <RenderErrorState />;
-    }
-    if (fileState.objectUrl) {
-      return <h1>Uploaded ✅</h1>;
-    }
-    return <RenderEmptyState isDragActive={isDragActive} />;
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    handleFiles(files)
   }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "image/*": [] },
-    maxFiles: 1,
-    multiple: false,
-    maxSize: 5 * 1024 * 1024, // 5MB
-  });
+  const handleDeleteFile = async (index: number) => {
+    const file = uploadedFiles[index]
+    try {
+      await fetch("/api/delete", { method: "POST", body: JSON.stringify({ name: file.name }) })
+    } catch (err) { console.error("Failed to delete file:", err) }
+
+    setUploadedFiles([])
+    toast.info("File removed successfully.")
+    onFileUpload?.("") // reset file key in form
+  }
 
   return (
-    <Card
-      {...getRootProps()}
-      className={cn(
-        "relative border-2 border-dashed transition-colors duration-200 ease-in-out w-full h-64",
-        isDragActive
-          ? "border-primary bg-primary/10 border-solid"
-          : "border-border hover:border-primary"
-      )}
-    >
-      <CardContent className="flex items-center justify-center h-full w-full p-4">
-        <input {...getInputProps()} />
-        {renderContent(isDragActive)}
-      </CardContent>
-    </Card>
-  );
+    <div className="w-full bg-background p-4 rounded-lg mt-3">
+      <div className="mx-auto max-w-2xl">
+        <div className="space-y-8">
+          <div
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            className="mt-6 mb-6"
+          >
+            <RenderEmptyState
+              isDragActive={isDragActive}
+              onFileSelect={handleFileInputChange}
+              isUploading={isUploading}
+              hasFile={uploadedFiles.length > 0}
+              onRemoveFile={() => handleDeleteFile(0)}
+            />
+          </div>
+
+          {uploadedFiles.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Uploaded File</h3>
+              <div className="grid gap-3">
+                {uploadedFiles.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="font-medium">{file.name}</span>
+                      <span className="text-sm text-muted-foreground">({(file.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteFile(index)}
+                      className="p-1 rounded-full hover:bg-destructive/10 transition-colors group"
+                      aria-label={`Delete ${file.name}`}
+                    >
+                      <X className="w-4 h-4 text-muted-foreground group-hover:text-destructive transition-colors" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {showError && <RenderErrorState />}
+        </div>
+      </div>
+    </div>
+  )
 }
