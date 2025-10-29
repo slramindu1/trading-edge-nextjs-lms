@@ -50,6 +50,7 @@ export default function CourseCreationPage() {
       fileKey: "",
       slug: "",
       status: "Draft",
+      smallDescription: "",
     },
   });
 
@@ -134,6 +135,20 @@ export default function CourseCreationPage() {
                   Generate Slug <SparkleIcon className="ml-1" size={16} />
                 </Button>
               </div>
+               {/* Small Description */}
+              <FormField
+                  control={form.control}
+                  name="smallDescription"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Small Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Small Description" className="min-h-[120px]" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               {/* Description */}
               <FormField
                 control={form.control}

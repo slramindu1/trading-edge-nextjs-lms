@@ -13,6 +13,7 @@ export const SectionSchema = z.object({
   fileKey: z.string().min(1, { message: "Thumbnail is required" }),
   slug: z.string().min(3, { message: "Slug is required" }),
   status: z.enum(courseStatus).default("Draft"),
+  smallDescription: z.string().min(3,{message:"Small Description must be at least 3 characters"}).max(200,{message:"Small Description must be at most 100 characters"}),
 });
 
 export type SectionSchemaType = z.infer<typeof SectionSchema>;

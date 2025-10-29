@@ -13,13 +13,18 @@ interface UploadedFile {
 }
 
 interface UploaderProps {
-  onFileUpload?: (filePath: string) => void // <-- new prop
+  onFileUpload?: (filePath: string) => void
+  defaultValue?: string // ← existing uploaded file path
 }
 
-export default function Uploader({ onFileUpload }: UploaderProps) {
+export default function Uploader({ onFileUpload, defaultValue }: UploaderProps) {
   const [isDragActive, setIsDragActive] = useState(false)
   const [showError, setShowError] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(
+    defaultValue
+      ? [{ name: defaultValue.split("/").pop() || "image", size: 0, type: "image", url: defaultValue }]
+      : []
+  )
   const [isUploading, setIsUploading] = useState(false)
 
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "image/svg+xml"]
@@ -27,7 +32,7 @@ export default function Uploader({ onFileUpload }: UploaderProps) {
   // Generate random name like tradingedge57541
   const generateFileName = (original: File) => {
     const ext = original.name.split(".").pop()
-    const randomId = Math.floor(10000 + Math.random() * 90000) // 5-digit number
+    const randomId = Math.floor(10000 + Math.random() * 90000)
     return `tradingedge${randomId}.${ext}`
   }
 
@@ -77,14 +82,12 @@ export default function Uploader({ onFileUpload }: UploaderProps) {
 
       setUploadedFiles([uploaded])
       toast.success("File uploaded successfully!")
-
-      // Pass uploaded file path to parent form for validation
       onFileUpload?.(uploaded.url || "")
     } catch (error) {
       console.error("Upload failed:", error)
       setShowError(true)
       toast.error("File upload failed. Please try again.")
-      onFileUpload?.("") // reset file key in form
+      onFileUpload?.("")
     } finally {
       setIsUploading(false)
     }
@@ -103,55 +106,55 @@ export default function Uploader({ onFileUpload }: UploaderProps) {
 
     setUploadedFiles([])
     toast.info("File removed successfully.")
-    onFileUpload?.("") // reset file key in form
+    onFileUpload?.("")
   }
 
   return (
     <div className="w-full bg-background p-4 rounded-lg mt-3">
-      <div className="mx-auto max-w-2xl">
-        <div className="space-y-8">
-          <div
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            className="mt-6 mb-6"
-          >
-            <RenderEmptyState
-              isDragActive={isDragActive}
-              onFileSelect={handleFileInputChange}
-              isUploading={isUploading}
-              hasFile={uploadedFiles.length > 0}
-              onRemoveFile={() => handleDeleteFile(0)}
-            />
-          </div>
+      <div className="mx-auto max-w-2xl space-y-8">
+        <div
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          className="mt-6 mb-6"
+        >
+          <RenderEmptyState
+            isDragActive={isDragActive}
+            onFileSelect={handleFileInputChange}
+            isUploading={isUploading}
+            hasFile={uploadedFiles.length > 0}
+            onRemoveFile={() => handleDeleteFile(0)}
+          />
+        </div>
 
-          {uploadedFiles.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">Uploaded File</h3>
-              <div className="grid gap-3">
-                {uploadedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+        {uploadedFiles.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-foreground">Uploaded File</h3>
+            <div className="grid gap-3">
+              {uploadedFiles.map((file, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    {file.url && <img src={file.url} className="w-12 h-12 object-cover rounded-md" />}
+                    <div>
                       <span className="font-medium">{file.name}</span>
                       <span className="text-sm text-muted-foreground">({(file.size / 1024).toFixed(1)} KB)</span>
                     </div>
-                    <button
-                      onClick={() => handleDeleteFile(index)}
-                      className="p-1 rounded-full hover:bg-destructive/10 transition-colors group"
-                      aria-label={`Delete ${file.name}`}
-                    >
-                      <X className="w-4 h-4 text-muted-foreground group-hover:text-destructive transition-colors" />
-                    </button>
                   </div>
-                ))}
-              </div>
+                  <button
+                    onClick={() => handleDeleteFile(index)}
+                    className="p-1 rounded-full hover:bg-destructive/10 transition-colors group"
+                    aria-label={`Delete ${file.name}`}
+                  >
+                    <X className="w-4 h-4 text-muted-foreground group-hover:text-destructive transition-colors" />
+                  </button>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        )}
 
-          {showError && <RenderErrorState />}
-        </div>
+        {showError && <RenderErrorState />}
       </div>
     </div>
   )
