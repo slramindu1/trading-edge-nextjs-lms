@@ -23,7 +23,7 @@ export default function AdminLayout({
         <SiteHeader />
 
         {/* Add Toaster here so toast alerts work */}
-        <Toaster position="bottom-right" />
+        <Toaster position="bottom-right" closeButton/>
 
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
