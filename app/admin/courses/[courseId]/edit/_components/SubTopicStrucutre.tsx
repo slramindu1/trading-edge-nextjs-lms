@@ -37,6 +37,10 @@ import { toast } from "sonner";
 import { error } from "console";
 import { set } from "zod";
 import { reorderChapters, reorderLessons } from "../actions";
+import { NewchapterModal } from "./NewChapterModal";
+import { NewLessonModal } from "./NewLessonModal";
+import { DeleteLesson } from "./DeleteLesson";
+import { DeleteChapter } from "./DeleteChapter";
 
 interface iAppProps {
   data: AdminCourseSingularType;
@@ -83,7 +87,7 @@ export function SubTopicStrucutre({ data }: iAppProps) {
           order: lesson.position,
         })),
       }));
-       return updatedItems;
+      return updatedItems;
     });
   }, [data]);
 
@@ -299,6 +303,7 @@ export function SubTopicStrucutre({ data }: iAppProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between border-b border-border">
           <CardTitle>Chapters</CardTitle>
+          <NewchapterModal courseId={data.id} />
         </CardHeader>
         <CardContent>
           <SortableContext items={items} strategy={verticalListSortingStrategy}>
@@ -324,7 +329,6 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                           >
                             <GripVertical className="size-4" />
                           </Button>
-                          {/* <span className="font-medium">{item.title}</span> */}
                           <CollapsibleTrigger asChild>
                             <Button
                               size="icon"
@@ -342,10 +346,10 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                             {item.title}
                           </p>
                         </div>
-                        <Button size="icon" variant="outline">
-                          <Trash2 className="size-4" />
-                        </Button>
+                       <DeleteChapter chapterId={ item.id} sectionId={data.id}/>
+
                       </div>
+
                       <CollapsibleContent>
                         <div className="p-1">
                           <SortableContext
@@ -360,7 +364,6 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                               >
                                 {(lessonListeners) => (
                                   <div className="flex items-center justify-between p-2 hover:bg-accent rounded-sm">
-                                    {/* Left side: drag handle + icon + title */}
                                     <div className="flex items-center gap-2">
                                       <Button
                                         variant="ghost"
@@ -377,19 +380,23 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                                       </Link>
                                     </div>
 
-                                    {/* Right side: delete button */}
-                                    <Button variant="outline" size="icon">
-                                      <Trash2 className="size-4" />
-                                    </Button>
+                                   
+                                    <DeleteLesson
+                                      chapterId={item.id}
+                                      sectionId={data.id}
+                                      lessonId={lesson.id}
+                                    />
                                   </div>
                                 )}
                               </SortableItem>
                             ))}
                           </SortableContext>
+
                           <div className="p-2">
-                            <Button variant="outline" className="w-full">
-                              Create New Lesson
-                            </Button>
+                            <NewLessonModal
+                              chapterId={item.id}
+                              courseId={data.id}
+                            />
                           </div>
                         </div>
                       </CollapsibleContent>
