@@ -3,13 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
 export async function adminGetCourse(id: string) {
+  await new Promise((resolve) => setTimeout(resolve, 5000)); // Simulated delay
+
   const data = await prisma.section.findUnique({
     where: { id },
     include: {
       chapters: {
         include: {
           lessons: true,
-          
         },
       },
     },
@@ -20,4 +21,6 @@ export async function adminGetCourse(id: string) {
   return data;
 }
 
-export type AdminCourseSingularType = Awaited<ReturnType<typeof adminGetCourse>>;
+export type AdminCourseSingularType = Awaited<
+  ReturnType<typeof adminGetCourse>
+>;

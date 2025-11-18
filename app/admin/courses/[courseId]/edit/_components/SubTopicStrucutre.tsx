@@ -373,9 +373,11 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                                         <GripVertical className="size-4" />
                                       </Button>
                                       <FileText className="size-4" />
-                                      <Link
+                                      {/* <Link
                                         href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
-                                      >
+                                      > */}
+                                      <Link href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}>
+
                                         {lesson.title}
                                       </Link>
                                     </div>

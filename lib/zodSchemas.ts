@@ -12,7 +12,7 @@ export const SectionSchema = z.object({
     .max(500, { message: "Description must be at most 500 characters" }),
   fileKey: z.string().min(1, { message: "Thumbnail is required" }),
   slug: z.string().min(3, { message: "Slug is required" }),
-  status: z.enum(courseStatus).default("Draft"),
+  status: z.enum(courseStatus),
   smallDescription: z
     .string()
     .min(3, { message: "Small Description must be at least 3 characters" })

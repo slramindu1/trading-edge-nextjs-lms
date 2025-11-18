@@ -1,3 +1,4 @@
+// components/file-uploader/Uploader.tsx
 "use client"
 import type React from "react"
 import { useState } from "react"
@@ -64,20 +65,33 @@ export default function Uploader({ onFileUpload, defaultValue }: UploaderProps) 
     setShowError(false)
 
     try {
-      const renamedFile = generateFileName(file)
+      const renamed = generateFileName(file)
+      // Create a new File object so server receives the new filename reliably
+      const fileForUpload = new File([file], renamed, { type: file.type })
+
       const formData = new FormData()
-      formData.append("file", file, renamedFile)
+      formData.append("file", fileForUpload)
 
       const res = await fetch("/api/upload", { method: "POST", body: formData })
-      if (!res.ok) throw new Error("Upload failed")
+      if (!res.ok) {
+        // try to parse error message if possible
+        let errMsg = `Upload failed (${res.status})`
+        try {
+          const errJson = await res.json()
+          errMsg = errJson?.error || errMsg
+        } catch (_) {}
+        throw new Error(errMsg)
+      }
 
-      const data = await res.json()
+      // parse json safely
+      const data = await res.json().catch(() => null)
+      const url = (data && (data.url || data.path)) || `/uploads/${renamed}`
 
       const uploaded = {
-        name: renamedFile,
+        name: renamed,
         size: file.size,
         type: file.type,
-        url: data.path,
+        url,
       }
 
       setUploadedFiles([uploaded])
@@ -86,6 +100,7 @@ export default function Uploader({ onFileUpload, defaultValue }: UploaderProps) 
     } catch (error) {
       console.error("Upload failed:", error)
       setShowError(true)
+      // show human-friendly message
       toast.error("File upload failed. Please try again.")
       onFileUpload?.("")
     } finally {
@@ -101,7 +116,8 @@ export default function Uploader({ onFileUpload, defaultValue }: UploaderProps) 
   const handleDeleteFile = async (index: number) => {
     const file = uploadedFiles[index]
     try {
-      await fetch("/api/delete", { method: "POST", body: JSON.stringify({ name: file.name }) })
+      // optionally delete from server if you implement /api/delete
+      await fetch("/api/delete", { method: "POST", body: JSON.stringify({ name: file.name }), headers: { "Content-Type": "application/json" } })
     } catch (err) { console.error("Failed to delete file:", err) }
 
     setUploadedFiles([])

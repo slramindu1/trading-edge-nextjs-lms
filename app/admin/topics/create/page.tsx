@@ -38,11 +38,14 @@ import { tryCatch } from "@/hooks/try-catch";
 import { CreateCourse } from "./actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useConfetti } from "@/hooks/use-confetti";
 
 export default function CourseCreationPage() {
   const [Pending, startTransition] = useTransition();
   const router = useRouter();
-  const form = useForm({
+  const {triggerConfetti} = useConfetti();
+
+  const form = useForm<SectionSchemaType>({
     resolver: zodResolver(SectionSchema),
     defaultValues: {
       title: "",
@@ -64,8 +67,9 @@ export default function CourseCreationPage() {
       }
       if (result.status === "success") {
         toast.success(result.message);
+        triggerConfetti();
         form.reset();
-        router.push("/admin/courses");
+        router.push("/admin/topics");
       } else if (result.status === "error") {
         toast.error(result.message);
       }
@@ -76,7 +80,7 @@ export default function CourseCreationPage() {
     <>
       <div className="flex items-center gap-4 mb-6">
         <Link
-          href="/admin/courses"
+          href="/admin/topics"
           className={buttonVariants({ variant: "outline", size: "icon" })}
         >
           <ArrowLeft className="size-4" />
