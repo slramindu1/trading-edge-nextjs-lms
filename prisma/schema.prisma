@@ -21,6 +21,14 @@ model User {
   user_type_id      Int
   status_id         Int
   aboutMe           String?  @db.VarChar(500)
+
+  // NEW → Track Free or Paid
+  student_type      StudentType @default(FREE)
+}
+
+enum StudentType {
+  FREE
+  PAID
 }
 
 model Section {

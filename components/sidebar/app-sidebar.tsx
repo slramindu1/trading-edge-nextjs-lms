@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   IconCamera,
   IconChartBar,
@@ -17,11 +17,12 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavUser } from "@/components/sidebar/nav-user";
+
 import {
   Sidebar,
   SidebarContent,
@@ -30,11 +31,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 import Logo from "@/app/logo-white.png";
-import Image from "next/image"
+import Image from "next/image";
+import { UserRoundPlusIcon } from "lucide-react";
 
 const data = {
   user: {
@@ -49,26 +51,29 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Courses",
-      url: "admin/courses",
+      title: "Section",
+      url: "admin/topics",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
+      title: "Students",
       url: "#",
       icon: IconUsers,
     },
+    
+    {
+      title: "Announcements",
+      url: "#",
+      icon: IconUsers,
+    },
+    {
+      title: "NewsLetter",
+      url: "#",
+      icon: IconUsers,
+    },
+    
   ],
+
   navClouds: [
     {
       title: "Capture",
@@ -134,7 +139,7 @@ const data = {
       icon: IconSearch,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -147,7 +152,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href="#">
-                <Image  src={Logo} alt="logo" width={196} height={186}/>
+                <Image src={Logo} alt="logo" width={196} height={186} />
                 {/* <span className="text-base font-semibold">Acme Inc.</span> */}
               </Link>
             </SidebarMenuButton>
@@ -156,12 +161,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-       
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

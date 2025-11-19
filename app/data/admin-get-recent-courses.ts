@@ -1,19 +1,21 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 
-export async function adminGetCourses() {
+export async function adminGetRecentCourses() {
+    await new Promise((resolve) => setTimeout(resolve,2000));
   const data = await prisma.section.findMany({
     orderBy: {
-      dateCreated: 'asc',
+      dateCreated: "desc",
     },
+    take: 4,
     select: {
       id: true,
       title: true,
+      smallDescription: true,
       description: true,
+      status: true,
       fileKey: true,
       slug: true,
-      status: true,
-      smallDescription: true,
       chapters: {
         select: {
           id: true,
@@ -24,9 +26,9 @@ export async function adminGetCourses() {
               id: true,
               title: true,
               description: true,
-              thumbnailUrl: true,
-              videoUrl: true, 
               position: true,
+              thumbnailUrl: true,
+              videoUrl: true,
             },
           },
         },
@@ -36,6 +38,3 @@ export async function adminGetCourses() {
 
   return data;
 }
-
-
-export type AdminCourseType = Awaited<ReturnType<typeof adminGetCourses>>[0];

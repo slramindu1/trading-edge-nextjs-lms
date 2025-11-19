@@ -1,4 +1,14 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+// "use client";
+
+import { 
+  IconPlaylistX, 
+  IconTrendingDown, 
+  IconTrendingUp,
+  IconUserPlus,
+  IconCoins,
+  IconBook,
+  IconChartBar
+} from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -9,15 +19,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { adminGetDashboardStats } from "@/app/data/adim-get-dashboard-stats"
 
-export function SectionCards() {
+export async function SectionCards() {
+  const {totalSignups,PaidMentorshipStudents,totalLessons,totalSections} = await adminGetDashboardStats()
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+
+      {/* Total Registered Students */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Registered Students</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+           {totalSignups}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -28,18 +42,21 @@ export function SectionCards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
+            Strong growth this month <IconTrendingUp className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            All users registered on the platform (Free + Paid)
           </div>
         </CardFooter>
       </Card>
+
+
+      {/* Paid Mentorship Enrollments */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Paid Mentorship Students</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+          {PaidMentorshipStudents}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -50,38 +67,46 @@ export function SectionCards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
+            Enrollment slowed this period <IconTrendingDown className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Acquisition needs attention
+            Users currently subscribed to paid mentorship
           </div>
         </CardFooter>
       </Card>
+
+
+      {/* Total Sections */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Training Sections</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+            {totalSections}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
               <IconTrendingUp />
-              +12.5%
+              +5.2%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            High user engagement <IconTrendingUp className="size-4" />
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
+          <div className="text-muted-foreground">
+            Structured sections in the Forex Mentorship Program
+          </div>
         </CardFooter>
       </Card>
+
+
+      {/* Total Lessons */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Total Lessons</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {totalLessons}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -92,11 +117,14 @@ export function SectionCards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            Content library expanding <IconTrendingUp className="size-4" />
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
+          <div className="text-muted-foreground">
+            All published lessons across all mentorship sections
+          </div>
         </CardFooter>
       </Card>
+
     </div>
   )
 }

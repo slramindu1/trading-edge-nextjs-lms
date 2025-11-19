@@ -1,4 +1,4 @@
-// src/app/data/admin-get-course.ts
+import "server-only";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
