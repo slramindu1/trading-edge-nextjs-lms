@@ -1,40 +1,44 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
+import { EmptyState } from "@/components/general/EmptyState";
+import { getEnrolledCourses } from "../data/user/get-enrolled-courses";
+import { getAllCourses } from "../data/course/get-all-courses";
+import { CourseProgressCard } from "@/app/dashboard/_components/CourseProgressCard";
+import Link from "next/link";
 
-import data from "./data.json"
+export default async function DashboardPage() {
+  // Fetch all courses + enrolled data in parallel
+  const [courses, enrolledCourses] = await Promise.all([
+    getAllCourses(),
+    getEnrolledCourses(),
+  ]);
 
-export default function Page() {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <SectionCards />
-              <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
-              </div>
-              <DataTable data={data} />
-            </div>
-          </div>
+    <>
+      <div className="flex flex-col gap-2 mb-6">
+        <h1 className="text-3xl font-bold">Enrolled Sections</h1>
+        <p className="text-muted-foreground">
+          Here you can see all the courses you have access to
+        </p>
+      </div>
+
+      {enrolledCourses.length === 0 ? (
+        <EmptyState
+          title="No Courses Purchased"
+          description="You have not purchased any courses yet"
+          buttonText="Contact Admin"
+          href="https://wa.me/94776768597"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {enrolledCourses.flatMap((user) =>
+            user.enrollments.map((enrollment) => (
+              <CourseProgressCard
+                key={enrollment.section.id}
+                data={enrollment.section}
+              />
+            ))
+          )}
         </div>
-      </SidebarInset>
-    </SidebarProvider>
-  )
+      )}
+    </>
+  );
 }

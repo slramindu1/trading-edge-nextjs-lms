@@ -53,7 +53,7 @@ export default function LoginPage() {
 
         // Redirect based on user_type_id
         if (data.user_type_id === 1) {
-          window.location.href = "#"; // Regular user
+          window.location.href = "/dashboard"; // Regular user
         } else if (data.user_type_id === 2) {
           window.location.href = "/admin"; // Admin
         }

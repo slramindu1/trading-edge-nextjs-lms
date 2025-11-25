@@ -1,9 +1,8 @@
-// lib/prisma.ts
-import { PrismaClient } from "./generated/prisma"; // ✅ named import
+import { PrismaClient } from "../lib/generated/prisma";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const prisma = new PrismaClient({
+  // Prisma 7 automatically reads DATABASE_URL from environment
+  // No need to pass `url` or adapter
+});
 
-export const prisma =
-  globalForPrisma.prisma ?? new PrismaClient({ log: ["query", "info"] });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export { prisma };

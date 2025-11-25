@@ -8,27 +8,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum StudentType {
+  FREE
+  PAID
+}
+
+enum CourseStatus {
+  Draft
+  Published
+  Archived
+}
+
 model User {
-  id                String   @id @default(uuid())
-  email             String   @unique
+  id                String       @id @default(uuid())
+  email             String       @unique
   fname             String?
   lname             String?
   password          String
   mobile            String?
-  joined_date       DateTime @default(now())
+  joined_date       DateTime     @default(now())
   verification_code String?
   gender_id         Int
   user_type_id      Int
   status_id         Int
-  aboutMe           String?  @db.VarChar(500)
+  aboutMe           String?      @db.VarChar(500)
+  student_type      StudentType  @default(FREE)
 
-  // NEW → Track Free or Paid
-  student_type      StudentType @default(FREE)
-}
-
-enum StudentType {
-  FREE
-  PAID
+  enrollments Enrollment[]
+  LessonProgress LessonProgress[]
 }
 
 model Section {
@@ -41,13 +48,8 @@ model Section {
   slug             String       @unique
   status           CourseStatus @default(Draft)
 
-  chapters Chapter[]
-}
-
-enum CourseStatus {
-  Draft
-  Published
-  Archived
+  chapters    Chapter[]
+  enrollments Enrollment[]
 }
 
 model Chapter {
@@ -76,4 +78,31 @@ model Lesson {
   chapterId    String
 
   position     Int
+
+  LessonProgress LessonProgress[]
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  section   Section  @relation(fields: [sectionId], references: [id])
+  sectionId String
+  createdAt DateTime @default(now())
+}
+
+
+model LessonProgress{
+  id String @id @default(uuid())
+  completed Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User @relation(fields: [userId], references: [id],onDelete:Cascade)
+  userId String
+  lessons Lesson @relation(fields: [LessonId],references: [id], onDelete:Cascade)
+  LessonId String
+
+  @@unique([userId,LessonId])
+
 }

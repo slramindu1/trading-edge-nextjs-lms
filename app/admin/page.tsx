@@ -7,6 +7,7 @@ import { adminGetRecentCourses } from "../data/admin-get-recent-courses";
 import { EmptyState } from "@/components/general/EmptyState";
 import { AdminCourseCard, AdminCourseCardSkeleton } from "./topics/_components/AdminCourseCard";
 import { Suspense } from "react";
+import { requireAdmin } from "@/app/data/require-admin";
 
 // Define Section type returned by adminGetRecentCourses
 type Lesson = {
@@ -39,6 +40,8 @@ type Section = {
 export default async function AdminIndexPage() {
   const enrollmentData = await adminGetEnrollmentStats();
 
+
+
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
       <SectionCards />
@@ -47,6 +50,7 @@ export default async function AdminIndexPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Recent Sections</h2>
+         
           <Link
             className={buttonVariants({ variant: "outline" })}
             href="/admin/topics"

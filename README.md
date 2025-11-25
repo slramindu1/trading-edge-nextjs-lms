@@ -15,7 +15,7 @@ bun dev
 
 pnpm run dev to run project
 
-pnpm prisham generate -generate prisma
+pnpm prisma generate -generate prisma
 
 pnpm dlx prisma db push -push prisma
 
