@@ -17,7 +17,7 @@ pnpm run dev to run project
 
 pnpm prisma generate -generate prisma
 
-pnpm dlx prisma db push -push prisma
+pnpm  prisma db push -push prisma
 
 ```
 

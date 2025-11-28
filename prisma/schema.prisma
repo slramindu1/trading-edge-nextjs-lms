@@ -27,15 +27,16 @@ model User {
   password          String
   mobile            String?
   joined_date       DateTime     @default(now())
-  verification_code String?
+  verification_code String?      // reset token
+  reset_token_expiry DateTime?   // token expiry
   gender_id         Int
   user_type_id      Int
   status_id         Int
   aboutMe           String?      @db.VarChar(500)
   student_type      StudentType  @default(FREE)
 
-  enrollments Enrollment[]
-  LessonProgress LessonProgress[]
+  enrollments       Enrollment[]
+  LessonProgress    LessonProgress[]
 }
 
 model Section {
