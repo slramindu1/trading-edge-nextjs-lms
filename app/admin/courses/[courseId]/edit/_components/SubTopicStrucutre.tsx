@@ -342,9 +342,10 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                               )}
                             </Button>
                           </CollapsibleTrigger>
-                          <p className="cursor-pointer hover:text-primary pl-2">
+                          
+                         <Link href={`/admin/courses/${data.id}/${item.id}/edit`}>
                             {item.title}
-                          </p>
+                          </Link>
                         </div>
                        <DeleteChapter chapterId={ item.id} sectionId={data.id}/>
 
