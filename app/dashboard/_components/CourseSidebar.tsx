@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronDown, Play } from "lucide-react";
 import { LessonItem } from "./LessonItem";
 import { usePathname } from "next/navigation";
-import { progress } from "framer-motion";
 import { useCourseProgress } from "@/hooks/use-course-progress";
 
 interface iAppProps {
@@ -14,11 +13,11 @@ interface iAppProps {
 }
 
 export function CourseSidebar({ course }: iAppProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const currentLessonId = pathname.split("/").pop();
 
-  const {completedLessons,progressPercentage,totalLessons} = useCourseProgress({courseData: course});
-
+  const { completedLessons, progressPercentage, totalLessons } =
+    useCourseProgress({ courseData: course });
 
   return (
     <div className="flex flex-col h-full">
@@ -31,15 +30,16 @@ export function CourseSidebar({ course }: iAppProps) {
             <h1 className="font-semibold text-base leading-tight truncate">
               {course.title}
             </h1>
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              Forex Trading
-            </p>
+            <p className="text-xs text-muted-foreground mt-1 truncate">Forex Trading</p>
           </div>
         </div>
+
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium">{completedLessons}/{totalLessons} Lessons</span>
+            <span className="font-medium">
+              {completedLessons}/{totalLessons} Lessons
+            </span>
           </div>
           <Progress value={progressPercentage} className="h-1.5" />
           <p className="text-xs text-muted-foreground">{progressPercentage}% Complete</p>
@@ -50,10 +50,7 @@ export function CourseSidebar({ course }: iAppProps) {
         {course.chapters.map((chapter, index) => (
           <Collapsible key={chapter.id} defaultOpen={index === 0}>
             <CollapsibleTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full p-3 h-auto flex items-center gap-2"
-              >
+              <Button variant="outline" className="w-full p-3 h-auto flex items-center gap-2">
                 <ChevronDown className="w-4 h-4 text-primary" />
                 <div className="flex-1 text-left min-w-0">
                   <p className="font-semibold text-sm truncate text-foreground">
@@ -68,9 +65,17 @@ export function CourseSidebar({ course }: iAppProps) {
 
             <CollapsibleContent className="mt-3 pl-5 border-l-2 space-y-3">
               {chapter.lessons.map((lesson) => (
-                <LessonItem key={lesson.id} lesson={lesson} slug={course.slug} isActive={currentLessonId === lesson.id} completed={lesson.LessonProgress.find(
-                  (progress) => progress.LessonId === lesson.id
-                )?.completed || false} />
+                <LessonItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  slug={course.slug}
+                  chapterId={chapter.id}
+                  isActive={currentLessonId === lesson.id}
+                  completed={
+                    lesson.LessonProgress.find((p) => p.LessonId === lesson.id)?.completed ||
+                    false
+                  }
+                />
               ))}
             </CollapsibleContent>
           </Collapsible>

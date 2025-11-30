@@ -9,13 +9,17 @@ import Link from "next/link";
 import { SectionType, ChapterType } from "./types";
 
 interface ChapterProgressCardProps {
-  section: SectionType;  // full section
-  chapter: ChapterType;  // current chapter
+  section: SectionType; // full section
+  chapter: ChapterType; // current chapter
 }
 
-export function ChapterProgressCard({ section, chapter }: ChapterProgressCardProps) {
+export function ChapterProgressCard({
+  section,
+  chapter,
+}: ChapterProgressCardProps) {
+  // Pass only the current chapter to the hook
   const { totalLessons, completedLessons, progressPercentage } =
-    useCourseProgress({ courseData: section });
+    useCourseProgress({ courseData: { ...section, chapters: [chapter] } });
 
   const thumbnail = chapter.fileKey ?? "/default-chapter-thumbnail.jpg";
 
@@ -55,7 +59,7 @@ export function ChapterProgressCard({ section, chapter }: ChapterProgressCardPro
         </div>
 
         <Link
-          href={`/dashboard/chapters/${chapter.id}`}
+          href={`/dashboard/sections/${section.slug}/chapters/${chapter.id}`}
           className={buttonVariants({
             className: "w-full flex items-center justify-center gap-2 mt-4",
           })}
@@ -66,3 +70,4 @@ export function ChapterProgressCard({ section, chapter }: ChapterProgressCardPro
     </Card>
   );
 }
+
