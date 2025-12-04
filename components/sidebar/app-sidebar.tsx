@@ -51,16 +51,11 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Section",
-      url: "admin/topics",
-      icon: IconListDetails,
-    },
-    {
       title: "Students",
-      url: "#",
+      url: "admin/student/",
       icon: IconUsers,
     },
-    
+
     {
       title: "Announcements",
       url: "#",
@@ -71,7 +66,6 @@ const data = {
       url: "#",
       icon: IconUsers,
     },
-    
   ],
 
   navClouds: [

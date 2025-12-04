@@ -41,6 +41,7 @@ import { NewchapterModal } from "./NewChapterModal";
 import { NewLessonModal } from "./NewLessonModal";
 import { DeleteLesson } from "./DeleteLesson";
 import { DeleteChapter } from "./DeleteChapter";
+import { ShareLesson } from "./ShareLesson";
 
 interface iAppProps {
   data: AdminCourseSingularType;
@@ -342,13 +343,17 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                               )}
                             </Button>
                           </CollapsibleTrigger>
-                          
-                         <Link href={`/admin/courses/${data.id}/${item.id}/edit`}>
+
+                          <Link
+                            href={`/admin/courses/${data.id}/${item.id}/edit`}
+                          >
                             {item.title}
                           </Link>
                         </div>
-                       <DeleteChapter chapterId={ item.id} sectionId={data.id}/>
-
+                        <DeleteChapter
+                          chapterId={item.id}
+                          sectionId={data.id}
+                        />
                       </div>
 
                       <CollapsibleContent>
@@ -377,18 +382,26 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                                       {/* <Link
                                         href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
                                       > */}
-                                      <Link href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}>
-
+                                      <Link
+                                        href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
+                                      >
                                         {lesson.title}
                                       </Link>
                                     </div>
 
-                                   
-                                    <DeleteLesson
-                                      chapterId={item.id}
-                                      sectionId={data.id}
-                                      lessonId={lesson.id}
-                                    />
+                                    <div className="flex items-center gap-2">
+                                      <ShareLesson
+                                        lessonId={lesson.id}
+                                        chapterId={item.id}
+                                        slug={data.slug} // Section.slug
+                                      />
+
+                                      <DeleteLesson
+                                        chapterId={item.id}
+                                        sectionId={data.id}
+                                        lessonId={lesson.id}
+                                      />
+                                    </div>
                                   </div>
                                 )}
                               </SortableItem>

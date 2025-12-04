@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,10 +12,13 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react"; // icon for show/hide
+import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/dashboard"; // Default redirect if no query
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +30,7 @@ export default function LoginPage() {
     const newErrors: { email?: string; password?: string } = {};
     setErrors({}); // clear previous errors
 
+    // Validation
     if (!email) newErrors.email = "Please enter the email address";
     else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,8 +57,9 @@ export default function LoginPage() {
 
       if (res.ok) {
         toast.success("Login Successful!");
-        if (data.user_type_id === 1) window.location.href = "/dashboard";
-        else if (data.user_type_id === 2) window.location.href = "/admin";
+
+        // 🔹 Redirect based on redirect query param
+        window.location.href = redirectUrl;
       } else {
         toast.error(data.error || "Login Failed");
       }
@@ -64,10 +70,10 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto ">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle className="text-xl">Welcome back!</CardTitle>
-        <CardDescription>Login with your Github email account</CardDescription>
+        <CardDescription>Login with your email account</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {/* Email Field */}

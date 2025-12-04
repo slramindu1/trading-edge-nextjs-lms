@@ -83,7 +83,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
+              {/* <DropdownMenuItem asChild>
                 <Link href={"/admin/lessons/"}>
                   <BookOpen className="h-4 w-4" />
                   Lessons
@@ -102,7 +102,7 @@ export function NavUser({
                   <ListChecks className="h-4 w-4" />
                    SubTopics
                 </Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
               <DropdownMenuItem>
                 <IconNotification />
