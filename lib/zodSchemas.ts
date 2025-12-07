@@ -41,8 +41,22 @@ export const lessonSchema = z.object({
     .optional(),
   thumbnailUrl:z.string().optional(),
   videoUrl: z.string().optional(),
+  topicId: z.string().optional(),
+});
+
+
+export const topicSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Topic title must be at least 3 characters long" })
+    .max(100, { message: "Topic title must be at most 100 characters" }),
+
+  chapterId: z
+    .string()
+    .min(1, { message: "Invalid Chapter ID" }),
 });
 
 export type SectionSchemaType = z.infer<typeof SectionSchema>;
 export type ChapterSchemaType = z.infer<typeof chapterSchema>;
 export type LessonSchemaType = z.infer<typeof lessonSchema>;
+export type TopicSchemaType = z.infer<typeof topicSchema>;

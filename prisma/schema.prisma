@@ -53,6 +53,7 @@ model Section {
   enrollments Enrollment[]
 }
 
+
 model Chapter {
   id               String    @id @default(uuid())
   title            String
@@ -80,10 +81,14 @@ model Lesson {
   chapter      Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId    String
 
+  topic        Topic?   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId      String?
+
   position     Int
 
   LessonProgress LessonProgress[]
 }
+
 
 model Enrollment {
   id        String   @id @default(uuid())
@@ -108,4 +113,14 @@ model LessonProgress{
 
   @@unique([userId,LessonId])
 
+}
+
+model Topic {
+  id        String   @id @default(uuid())
+  title     String
+  position  Int
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String
+
+  lessons   Lesson[]   // videos inside topic
 }

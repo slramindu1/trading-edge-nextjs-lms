@@ -19,17 +19,19 @@ export function useCourseProgress({ courseData }: iAppProps): CourseProgressResu
     let completedLessons = 0;
 
     courseData.chapters.forEach((chapter) => {
-      chapter.lessons.forEach((lesson) => {
-        totalLessons++;
+      // 🔹 Fix: iterate topics first
+      (chapter.topics ?? []).forEach((topic) => {
+        (topic.lessons ?? []).forEach((lesson) => {
+          totalLessons++;
 
-        // 🔥 FIXED: correct syntax + correct field name (LessonId)
-        const isCompleted = lesson.LessonProgress.some(
-          (progress) => progress.LessonId === lesson.id && progress.completed
-        );
+          const isCompleted = lesson.LessonProgress.some(
+            (progress) => progress.LessonId === lesson.id && progress.completed
+          );
 
-        if (isCompleted) {
-          completedLessons++;
-        }
+          if (isCompleted) {
+            completedLessons++;
+          }
+        });
       });
     });
 

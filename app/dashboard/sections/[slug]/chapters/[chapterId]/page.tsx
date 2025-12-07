@@ -13,12 +13,22 @@ export default async function CourseSlugRoute({ params }: iAppProps) {
   const courseData = await getCourseSidebarData(slug, session.user.id);
 
   // Find the current chapter by chapterId
-  const currentChapter = courseData.course?.chapters.find(c => c.id === chapterId);
-  const firstLesson = currentChapter?.lessons?.[0];
+  const currentChapter = courseData.course?.chapters.find(
+    (c) => c.id === chapterId
+  );
+
+  // 🔹 Only get lessons from topics that have lessons
+  const lessons = currentChapter?.topics
+    .filter((t) => t.lessons.length > 0)
+    .flatMap((t) => t.lessons);
+
+  const firstLesson = lessons?.[0];
 
   if (firstLesson) {
     // Redirect to the first lesson of this chapter
-    redirect(`/dashboard/sections/${slug}/chapters/${chapterId}/${firstLesson.id}`);
+    redirect(
+      `/dashboard/sections/${slug}/chapters/${chapterId}/${firstLesson.id}`
+    );
   }
 
   return (

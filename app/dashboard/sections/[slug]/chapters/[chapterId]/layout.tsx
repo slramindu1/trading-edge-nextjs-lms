@@ -13,22 +13,29 @@ export default async function ChapterLayout({ children, params }: iAppProps) {
 
   if (!chapter) return <div>Chapter Not Found</div>;
 
+  // Map topics into chapters for sidebar
+  const chapterForSidebar = chapter.topics.map((topic) => ({
+    id: topic.id,
+    title: topic.title,
+    position: topic.position,
+    lessons: topic.lessons,
+  }));
+
   return (
     <div className="flex flex-1">
       <div className="w-90 border-r border-border shrink-0">
-        {/* Sidebar can show current chapter only */}
         <CourseSidebar
           course={{
             id: chapter.section.id,
             title: chapter.section.title,
-            fileKey: "", // optional, default empty string
+            fileKey: "", // optional
             slug: chapter.section.slug,
             chapters: [
               {
                 id: chapter.id,
                 title: chapter.title,
                 position: chapter.position,
-                lessons: chapter.lessons,
+                topics: chapterForSidebar, // <-- pass topics here
               },
             ],
           }}

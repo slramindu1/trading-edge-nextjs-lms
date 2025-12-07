@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import "server-only";
 
 export async function getCourseSidebarData(slug: string, userId: string) {
-
-  // 1. Load course/section with chapters & lessons
   const course = await prisma.section.findUnique({
     where: { slug },
     select: {
@@ -18,23 +16,29 @@ export async function getCourseSidebarData(slug: string, userId: string) {
           id: true,
           title: true,
           position: true,
-          lessons: {
+          topics: {                // <-- Load topics
             orderBy: { position: "asc" },
             select: {
               id: true,
               title: true,
               position: true,
-              description: true,
-              LessonProgress:{
-                where:{
-                  userId:userId,
+              lessons: {           // <-- Load lessons under topic
+                orderBy: { position: "asc" },
+                select: {
+                  id: true,
+                  title: true,
+                  description: true,
+                  position: true,
+                  LessonProgress: {
+                    where: { userId },
+                    select: {
+                      completed: true,
+                      LessonId: true,
+                      id: true,
+                    },
+                  },
                 },
-                select:{
-                  completed:true,
-                  LessonId:true,
-                  id:true
-                }
-              }
+              },
             },
           },
         },
@@ -42,27 +46,15 @@ export async function getCourseSidebarData(slug: string, userId: string) {
     },
   });
 
-  if (!course) {
-    return notFound(); // slug invalid
-  }
+  if (!course) return notFound();
 
-  // 2. Check if user is enrolled in this section
   const enrollment = await prisma.enrollment.findFirst({
-    where: {
-      userId: userId,
-      sectionId: course.id,
-    },
+    where: { userId, sectionId: course.id },
   });
 
-  if (!enrollment) {
-    // User trying to access without purchase
-    return notFound();
-  }
+  if (!enrollment) return notFound();
 
-  // 3. Return full sidebar data including enroll state
-  return {
-    course,
-  };
+  return { course };
 }
 
-export type CourseSidebarDataType = Awaited<ReturnType<typeof getCourseSidebarData>>
+export type CourseSidebarDataType = Awaited<ReturnType<typeof getCourseSidebarData>>;

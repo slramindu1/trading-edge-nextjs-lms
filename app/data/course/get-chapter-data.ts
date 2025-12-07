@@ -12,16 +12,24 @@ export async function getChapterData(chapterId: string) {
       title: true,
       position: true,
       section: { select: { slug: true, id: true, title: true } },
-      lessons: {
+      topics: {  // <-- load topics
         orderBy: { position: "asc" },
         select: {
           id: true,
           title: true,
-          description: true,
           position: true,
-          LessonProgress: {
-            where: { userId: user.user.id },
-            select: { completed: true, LessonId: true, id: true },
+          lessons: {
+            orderBy: { position: "asc" },
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              position: true,
+              LessonProgress: {
+                where: { userId: user.user.id },
+                select: { completed: true, LessonId: true, id: true },
+              },
+            },
           },
         },
       },

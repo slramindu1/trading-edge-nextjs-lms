@@ -29,6 +29,14 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { updateLesson } from "../actions";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { NewTopicModal } from "./NewTopicModal";
 
 interface iAppProps {
   data: AdminLessonType;
@@ -37,7 +45,17 @@ interface iAppProps {
 }
 
 export function LessonForm({ chapterId, data, courseId }: iAppProps) {
+  const lessonType = [
+    { id: "1", name: "PDF" },
+    { id: "2", name: "Video" },
+  ];
+  const type = lessonType; // For now show sample data
+
   const [pending, startTransition] = useTransition();
+
+  // Topics from DB
+  const topics = data.chapter?.topics ?? [];
+
   const form = useForm<LessonSchemaType>({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
@@ -47,17 +65,17 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
       description: data.description ?? undefined,
       thumbnailUrl: data.thumbnailUrl ?? undefined,
       videoUrl: data.videoUrl ?? undefined,
+      topicId: data.topicId ?? undefined,
     },
   });
 
   function onSubmit(values: LessonSchemaType) {
-    // console.log(values);
     startTransition(async () => {
       const { data: result, error } = await tryCatch(
         updateLesson(values, data.id)
       );
       if (error) {
-        toast.error("An Unexpected error Ocurred. Please Try Again Later");
+        toast.error("An Unexpected error occurred. Please Try Again Later");
         return;
       }
       if (result.status === "success") {
@@ -86,7 +104,8 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Lesson Name */}
               <FormField
                 control={form.control}
                 name="name"
@@ -94,12 +113,14 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                   <FormItem>
                     <FormLabel>Lesson Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Chapter xys" {...field} />
+                      <Input placeholder="Lesson Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -114,6 +135,7 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                 )}
               />
 
+              {/* Thumbnail */}
               <FormField
                 control={form.control}
                 name="thumbnailUrl"
@@ -123,14 +145,45 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                     <FormControl>
                       <Uploader
                         onFileUpload={field.onChange}
-                        defaultValue={field.value} // <-- SHOW EXISTING IMAGE IN EDIT MODE
+                        defaultValue={field.value}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="topicId"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Resources Type</FormLabel>
 
+                    <div className="flex items-center gap-2">
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Your Resoource" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {type.map((type) => (
+                            <SelectItem key={type.id} value={type.name}>
+                              {type.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Video Link */}
               <FormField
                 control={form.control}
                 name="videoUrl"
@@ -138,13 +191,65 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                   <FormItem>
                     <FormLabel>Video Link</FormLabel>
                     <FormControl>
-                      <Input placeholder="Chapter xys" {...field} />
+                      <Input placeholder="Video URL" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={pending}>{pending ? 'Saving..': "Save Lesson"}</Button>
+              <FormField
+                control={form.control}
+                name="videoUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Time Duration</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Video Time Duration" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Video Topic Dropdown */}
+              <FormField
+                control={form.control}
+                name="topicId"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Video Topic</FormLabel>
+
+                    <div className="flex items-center gap-2">
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a topic" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {topics.map((topic) => (
+                            <SelectItem key={topic.id} value={topic.id}>
+                              {topic.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {/* Right side Add New button */}
+                      <NewTopicModal chapterId={chapterId} />
+                    </div>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" disabled={pending}>
+                {pending ? "Saving..." : "Save Lesson"}
+              </Button>
             </form>
           </Form>
         </CardContent>

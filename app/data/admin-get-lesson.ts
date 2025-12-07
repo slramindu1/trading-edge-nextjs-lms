@@ -5,21 +5,38 @@ import { notFound } from "next/navigation";
 export async function adminGetLesson(id: string) {
   const data = await prisma.lesson.findUnique({
     where: {
-      id: id,   // ← FIXED
+      id,
     },
     select: {
-      title: true,
-      videoUrl: true,
-      thumbnailUrl: true,
-      description: true,
       id: true,
+      title: true,
+      description: true,
+      thumbnailUrl: true,
+      videoUrl: true,
       position: true,
+
+      chapterId: true,
+      topicId: true,
+
+      // Get chapter → topics list
+      chapter: {
+        select: {
+          id: true,
+          title: true,
+          topics: {
+            select: {
+              id: true,
+              title: true,
+              position: true,
+            },
+            orderBy: { position: "asc" },
+          },
+        },
+      },
     },
   });
 
-  if (!data) {
-    return notFound();
-  }
+  if (!data) return notFound();
 
   return data;
 }
