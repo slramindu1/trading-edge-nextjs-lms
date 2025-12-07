@@ -8,7 +8,10 @@ import { z } from "zod";
 /* ----------------------------------------
   Update Lesson Function
 ---------------------------------------- */
-export async function updateLesson(values: LessonSchemaType, lessonId: string): Promise<ApiResponse> {
+export async function updateLesson(
+  values: LessonSchemaType & { videoDuration?: string },
+  lessonId: string
+): Promise<ApiResponse> {
   try {
     const result = lessonSchema.safeParse(values);
 
@@ -25,9 +28,20 @@ export async function updateLesson(values: LessonSchemaType, lessonId: string): 
         title: result.data.name,
         description: result.data.description,
         thumbnailUrl: result.data.thumbnailUrl,
+
+        // Resources
         videoUrl: result.data.videoUrl,
-        topicId: result.data.topicId, // <- update topicId if provided
-        chapterId: result.data.chapterId, // <- update chapterId if lesson moved
+        pdfUrl: result.data.pdfUrl,
+
+        // Type
+        lessonType: result.data.lessonType,
+
+        // Duration (Video only)
+        videoDuration: values.videoDuration ?? null,
+
+        // Structure
+        topicId: result.data.topicId,
+        chapterId: result.data.chapterId,
       },
     });
 
@@ -43,6 +57,7 @@ export async function updateLesson(values: LessonSchemaType, lessonId: string): 
     };
   }
 }
+
 
 /* ----------------------------------------
   Create Topic Function

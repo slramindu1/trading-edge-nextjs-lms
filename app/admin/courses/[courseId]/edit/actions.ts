@@ -168,30 +168,38 @@ export async function createLesson(
     }
 
     await prisma.$transaction(async (tx) => {
+      // Get max position in the chapter
       const maxPos = await tx.lesson.findFirst({
         where: { chapterId: result.data.chapterId },
         select: { position: true },
         orderBy: { position: "desc" },
       });
+
+      // Create the lesson
       await tx.lesson.create({
         data: {
           title: result.data.name,
-          description: result.data.description,
-          videoUrl: result.data.videoUrl,
-          thumbnailUrl: result.data.thumbnailUrl,
+          description: result.data.description ?? null,
+          videoUrl: result.data.videoUrl ?? null,
+          pdfUrl: result.data.pdfUrl ?? null,
+          thumbnailUrl: result.data.thumbnailUrl ?? null,
           chapterId: result.data.chapterId,
+          topicId: result.data.topicId ?? null,
+          lessonType: result.data.lessonType ?? null, // <-- now included
           position: (maxPos?.position ?? 0) + 1,
         },
       });
     });
 
+    // Revalidate admin course edit page
     revalidatePath(`/admin/courses/${result.data.sectionId}/edit`);
 
     return {
       status: "success",
       message: "Lesson created successfully",
     };
-  } catch {
+  } catch (error) {
+    console.error("CREATE LESSON ERROR:", error);
     return {
       status: "error",
       message: "Failed to create lesson",
@@ -317,7 +325,6 @@ export async function deleteChapter({
       ...Updates,
       prisma.chapter.delete({ where: { id: chapterId } }),
     ]);
-
 
     revalidatePath(`/admin/courses/${sectionId}/edit`);
 

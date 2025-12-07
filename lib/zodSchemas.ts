@@ -30,19 +30,20 @@ export const chapterSchema = z.object({
 });
 
 export const lessonSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Lesson title must be at least 3 characters long" }),
-  sectionId: z.uuid({ message: "Invalid Course ID" }),
-  chapterId: z.string().min(1, { message: "Invalid Chapter ID" }),
-  description: z
-    .string()
-    .min(1, { message: "Description must be at least 1 character long" })
-    .optional(),
-  thumbnailUrl:z.string().optional(),
+  name: z.string().min(3),
+  sectionId: z.uuid(),
+  chapterId: z.string(),
+  description: z.string().optional(),
+  thumbnailUrl: z.string().optional(),
   videoUrl: z.string().optional(),
+  pdfUrl: z.string().optional(),
   topicId: z.string().optional(),
+
+  lessonType: z.enum(["PDF", "VIDEO"]).optional(),
+
+  videoDuration: z.string().optional(),   // ✅ MUST BE ADDED
 });
+
 
 
 export const topicSchema = z.object({

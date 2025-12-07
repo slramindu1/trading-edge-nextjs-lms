@@ -13,10 +13,10 @@ export default async function CourseSlugRoute({ params }: iAppProps) {
   const courseData = await getCourseSidebarData(slug, session.user.id);
 
   const firstChapter = courseData.course?.chapters?.[0];
-  const firstLesson = firstChapter?.lessons?.[0];
+  const firstTopic = firstChapter?.topics?.[0];
+  const firstLesson = firstTopic?.lessons?.[0];
 
   if (firstLesson) {
-    // 🔹 Use backticks for template literal
     redirect(`/dashboard/${slug}/${firstLesson.id}`);
   }
 

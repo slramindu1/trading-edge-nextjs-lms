@@ -16,14 +16,16 @@ export async function getLessonContent(lessonId: string) {
       thumbnailUrl: true,
       videoUrl: true,
       position: true,
+      pdfUrl: true, 
+      lessonType: true,
       LessonProgress: {
         where: {
-            userId:session.user.id
+          userId: session.user.id,
         },
-        select:{
-            completed:true,
-            LessonId:true
-        }
+        select: {
+          completed: true,
+          LessonId: true,
+        },
       },
       chapter: {
         select: {

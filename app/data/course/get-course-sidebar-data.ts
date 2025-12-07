@@ -16,19 +16,27 @@ export async function getCourseSidebarData(slug: string, userId: string) {
           id: true,
           title: true,
           position: true,
-          topics: {                // <-- Load topics
+          topics: {
+            // <-- Load topics
             orderBy: { position: "asc" },
             select: {
               id: true,
               title: true,
               position: true,
-              lessons: {           // <-- Load lessons under topic
+              lessons: {
                 orderBy: { position: "asc" },
                 select: {
                   id: true,
                   title: true,
                   description: true,
                   position: true,
+
+                  // ADD THESE ↓↓↓
+                  lessonType: true,
+                  videoDuration: true,
+                  videoUrl: true,
+                  pdfUrl: true,
+
                   LessonProgress: {
                     where: { userId },
                     select: {
@@ -57,4 +65,6 @@ export async function getCourseSidebarData(slug: string, userId: string) {
   return { course };
 }
 
-export type CourseSidebarDataType = Awaited<ReturnType<typeof getCourseSidebarData>>;
+export type CourseSidebarDataType = Awaited<
+  ReturnType<typeof getCourseSidebarData>
+>;

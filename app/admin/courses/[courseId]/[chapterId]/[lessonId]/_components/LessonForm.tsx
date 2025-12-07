@@ -25,7 +25,7 @@ import { lessonSchema, LessonSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateLesson } from "../actions";
 import { toast } from "sonner";
@@ -45,18 +45,20 @@ interface iAppProps {
 }
 
 export function LessonForm({ chapterId, data, courseId }: iAppProps) {
-  const lessonType = [
-    { id: "1", name: "PDF" },
-    { id: "2", name: "Video" },
+  const lessonTypeOptions = [
+    { id: "1", name: "PDF", value: "PDF" },
+    { id: "2", name: "Video", value: "VIDEO" },
   ];
-  const type = lessonType; // For now show sample data
+
+  // Strongly typed state for lessonType
+  const [selectedType, setSelectedType] = useState<"PDF" | "VIDEO" | undefined>(
+    data.pdfUrl ? "PDF" : data.videoUrl ? "VIDEO" : undefined
+  );
 
   const [pending, startTransition] = useTransition();
-
-  // Topics from DB
   const topics = data.chapter?.topics ?? [];
 
-  const form = useForm<LessonSchemaType>({
+  const form = useForm<LessonSchemaType & { videoDuration?: string }>({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
       name: data.title,
@@ -65,19 +67,22 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
       description: data.description ?? undefined,
       thumbnailUrl: data.thumbnailUrl ?? undefined,
       videoUrl: data.videoUrl ?? undefined,
+      pdfUrl: data.pdfUrl ?? undefined,
       topicId: data.topicId ?? undefined,
+      lessonType: selectedType,
+      videoDuration: data.videoDuration ?? undefined,
     },
   });
 
-  function onSubmit(values: LessonSchemaType) {
+  function onSubmit(values: LessonSchemaType & { videoDuration?: string }) {
     startTransition(async () => {
-      const { data: result, error } = await tryCatch(
-        updateLesson(values, data.id)
-      );
+      const { data: result, error } = await tryCatch(updateLesson(values, data.id));
+
       if (error) {
-        toast.error("An Unexpected error occurred. Please Try Again Later");
+        toast.error("An unexpected error occurred. Please try again later.");
         return;
       }
+
       if (result.status === "success") {
         toast.success(result.message);
       } else if (result.status === "error") {
@@ -95,13 +100,13 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
         <ArrowLeft className="size-4" />
         <span>Go Back</span>
       </Link>
+
       <Card>
         <CardHeader>
           <CardTitle>Lesson Configuration</CardTitle>
-          <CardDescription>
-            Configure the video and description for this lesson.
-          </CardDescription>
+          <CardDescription>Configure the resources for this lesson.</CardDescription>
         </CardHeader>
+
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -152,83 +157,104 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                   </FormItem>
                 )}
               />
+
+              {/* Resource Type */}
+              <FormField
+                control={form.control}
+                name="lessonType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Resource Type</FormLabel>
+                    <Select
+                      onValueChange={(val: "PDF" | "VIDEO") => {
+                        setSelectedType(val);
+                        field.onChange(val);
+                      }}
+                      defaultValue={selectedType}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Resource Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {lessonTypeOptions.map((type) => (
+                          <SelectItem key={type.id} value={type.value}>
+                            {type.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Conditional Inputs */}
+              {selectedType === "PDF" && (
+                <FormField
+                  control={form.control}
+                  name="pdfUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>PDF URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter PDF URL (Google Drive, etc.)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {selectedType === "VIDEO" && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="videoUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Video URL</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Video URL" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="videoDuration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Video Duration</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Video Duration (e.g., 12:34)" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+
+              {/* Topic Dropdown */}
               <FormField
                 control={form.control}
                 name="topicId"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Resources Type</FormLabel>
-
+                    <FormLabel>Resources Topic</FormLabel>
                     <div className="flex items-center gap-2">
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select Your Resoource" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {type.map((type) => (
-                            <SelectItem key={type.id} value={type.name}>
-                              {type.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Video Link */}
-              <FormField
-                control={form.control}
-                name="videoUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Video Link</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Video URL" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="videoUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Time Duration</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Video Time Duration" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Video Topic Dropdown */}
-              <FormField
-                control={form.control}
-                name="topicId"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Video Topic</FormLabel>
-
-                    <div className="flex items-center gap-2">
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select a topic" />
-                          </SelectTrigger>
-                        </FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a topic" />
+                        </SelectTrigger>
                         <SelectContent>
                           {topics.map((topic) => (
                             <SelectItem key={topic.id} value={topic.id}>
@@ -237,11 +263,8 @@ export function LessonForm({ chapterId, data, courseId }: iAppProps) {
                           ))}
                         </SelectContent>
                       </Select>
-
-                      {/* Right side Add New button */}
                       <NewTopicModal chapterId={chapterId} />
                     </div>
-
                     <FormMessage />
                   </FormItem>
                 )}
