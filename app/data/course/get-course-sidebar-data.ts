@@ -17,7 +17,6 @@ export async function getCourseSidebarData(slug: string, userId: string) {
           title: true,
           position: true,
           topics: {
-            // <-- Load topics
             orderBy: { position: "asc" },
             select: {
               id: true,
@@ -30,13 +29,12 @@ export async function getCourseSidebarData(slug: string, userId: string) {
                   title: true,
                   description: true,
                   position: true,
-
                   // ADD THESE ↓↓↓
                   lessonType: true,
                   videoDuration: true,
                   videoUrl: true,
                   pdfUrl: true,
-
+                  
                   LessonProgress: {
                     where: { userId },
                     select: {

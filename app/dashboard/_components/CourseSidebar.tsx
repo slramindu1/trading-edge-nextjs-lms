@@ -81,45 +81,46 @@ export function CourseSidebar({ course }: iAppProps) {
             </CollapsibleTrigger>
 
             <CollapsibleContent className="mt-2 pl-4 border-l-2 space-y-2">
-              {chapter.topics.map((topic) => (
-                <Collapsible key={topic.id} defaultOpen={true}>
-                  <CollapsibleTrigger asChild>
+              {/* --- FILTER TOPICS: show only ones with lessons --- */}
+              {chapter.topics
+                .filter((topic) => topic.lessons.length > 0)
+                .map((topic) => (
+                  <Collapsible key={topic.id} defaultOpen={true}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center gap-2 p-3 h-auto text-left"
+                      >
+                        <ChevronDown className="w-4 h-4 text-primary" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm text-foreground truncate">
+                            {topic.title}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground font-medium">
+                            {topic.lessons.length} Lessons
+                          </p>
+                        </div>
+                      </Button>
+                    </CollapsibleTrigger>
 
-                    <Button
-                      variant="outline"
-                      className="w-full flex items-center gap-2 p-3 h-auto text-left"
-                    >
-                      <ChevronDown className="w-4 h-4 text-primary" />
-                      <div className="flex-1">
-                        <p className="font-semibold text-sm text-foreground truncate">
-                          {topic.title}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground font-medium">
-                        {topic.lessons.length}{" "}
-                          Lessons
-                        </p>
-                      </div>
-                    </Button>
-                  </CollapsibleTrigger>
-
-                  <CollapsibleContent className="mt-1 pl-4 space-y-1">
-                    {topic.lessons.map((lesson) => (
-                      <LessonItem
-                        key={lesson.id}
-                        lesson={lesson}
-                        slug={course.slug}
-                        chapterId={chapter.id}
-                        isActive={currentLessonId === lesson.id}
-                        completed={
-                          lesson.LessonProgress.find(
-                            (p) => p.LessonId === lesson.id
-                          )?.completed || false
-                        }
-                      />
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
-              ))}
+                    <CollapsibleContent className="mt-1 pl-4 space-y-1">
+                      {topic.lessons.map((lesson) => (
+                        <LessonItem
+                          key={lesson.id}
+                          lesson={lesson}
+                          slug={course.slug}
+                          chapterId={chapter.id}
+                          isActive={currentLessonId === lesson.id}
+                          completed={
+                            lesson.LessonProgress.find(
+                              (p) => p.LessonId === lesson.id
+                            )?.completed || false
+                          }
+                        />
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                ))}
             </CollapsibleContent>
           </Collapsible>
         ))}

@@ -12,7 +12,8 @@ export async function getChapterData(chapterId: string) {
       title: true,
       position: true,
       section: { select: { slug: true, id: true, title: true } },
-      topics: {  // <-- load topics
+      topics: {
+        // <-- load topics
         orderBy: { position: "asc" },
         select: {
           id: true,
@@ -25,6 +26,10 @@ export async function getChapterData(chapterId: string) {
               title: true,
               description: true,
               position: true,
+              videoUrl: true, 
+              pdfUrl: true, 
+              lessonType: true, 
+              videoDuration: true, 
               LessonProgress: {
                 where: { userId: user.user.id },
                 select: { completed: true, LessonId: true, id: true },

@@ -8,7 +8,9 @@ interface iAppProps {
 }
 
 export default async function ChapterLayout({ children, params }: iAppProps) {
-  const { chapterId } = params;
+  const resolvedParams = params;
+  const { chapterId } = resolvedParams;
+
   const chapter = await getChapterData(chapterId);
 
   if (!chapter) return <div>Chapter Not Found</div>;
@@ -18,7 +20,17 @@ export default async function ChapterLayout({ children, params }: iAppProps) {
     id: topic.id,
     title: topic.title,
     position: topic.position,
-    lessons: topic.lessons,
+    lessons: topic.lessons.map((lesson) => ({
+      id: lesson.id,
+      title: lesson.title,
+      position: lesson.position,
+      description: lesson.description,
+      videoUrl: lesson.videoUrl || null,
+      pdfUrl: lesson.pdfUrl || null,
+      lessonType: lesson.lessonType || null,
+      videoDuration: lesson.videoDuration || null,
+      LessonProgress: lesson.LessonProgress,
+    })),
   }));
 
   return (
