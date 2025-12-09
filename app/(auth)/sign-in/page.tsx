@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect") || "/dashboard"; // Default redirect if no query
+  const redirectUrl = searchParams.get("redirect"); // Default redirect if no query
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     const newErrors: { email?: string; password?: string } = {};
-    setErrors({}); // clear previous errors
+    setErrors({});
 
     // Validation
     if (!email) newErrors.email = "Please enter the email address";
@@ -58,8 +58,16 @@ export default function LoginPage() {
       if (res.ok) {
         toast.success("Login Successful!");
 
-        // 🔹 Redirect based on redirect query param
-        window.location.href = redirectUrl;
+        // 🔹 Redirect logic
+        if (redirectUrl) {
+          window.location.href = redirectUrl; // URL from query param
+        } else if (data.user_type_id === 1) {
+          window.location.href = "/admin"; // Admin default
+        } else if (data.user_type_id === 2) {
+          window.location.href = "/dashboard"; // Student default
+        } else {
+          window.location.href = "/not-user"; // Fallback
+        }
       } else {
         toast.error(data.error || "Login Failed");
       }

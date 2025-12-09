@@ -1,35 +1,42 @@
-import { Card } from "@/components/ui/card"
-import { Users, UserCheck, AlertCircle } from "lucide-react"
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Users, UserCheck, AlertCircle } from "lucide-react";
+
+interface Stats {
+  total: number;
+  active: number;
+  pending: number;
+}
 
 export default function UserStats() {
-  const stats = [
-    {
-      label: "Total Users",
-      value: "2,451",
-      icon: Users,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50 dark:bg-blue-950",
-    },
-    {
-      label: "Active Users",
-      value: "1,892",
-      icon: UserCheck,
-      color: "text-green-500",
-      bgColor: "bg-green-50 dark:bg-green-950",
-    },
-    {
-      label: "Pending Approval",
-      value: "47",
-      icon: AlertCircle,
-      color: "text-amber-500",
-      bgColor: "bg-amber-50 dark:bg-amber-950",
-    },
-  ]
+  const [stats, setStats] = useState<Stats>({ total: 0, active: 0, pending: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+       const res = await fetch("/api/users/stats", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch stats");
+        const data: Stats = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const statsConfig = [
+    { label: "Total Users", value: stats.total, icon: Users, color: "text-blue-500", bgColor: "bg-blue-50 dark:bg-blue-950" },
+    { label: "Active Users", value: stats.active, icon: UserCheck, color: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950" },
+    { label: "Pending Approval", value: stats.pending, icon: AlertCircle, color: "text-amber-500", bgColor: "bg-amber-50 dark:bg-amber-950" },
+  ];
 
   return (
     <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {stats.map((stat) => {
-        const Icon = stat.icon
+      {statsConfig.map(stat => {
+        const Icon = stat.icon;
         return (
           <Card key={stat.label} className="p-6">
             <div className="flex items-center justify-between">
@@ -42,8 +49,8 @@ export default function UserStats() {
               </div>
             </div>
           </Card>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

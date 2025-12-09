@@ -15,7 +15,7 @@ export async function requireUser() {
   }
 
   // 🔹 Ensure the user is of type normal user (user_type_id === 1)
-  if (session.user.user_type_id !== 1) {
+  if (session.user.user_type_id !== 2) {
     redirect("/not-user");
   }
 

@@ -11,7 +11,7 @@ export async function requireAdmin() {
   }
 
   // 🔹 If user is not admin (user_type_id !== 2), redirect to not-admin page
-  if (session.user.user_type_id !== 2) {
+  if (session.user.user_type_id !== 1) {
     redirect("/not-admin");
   }
 

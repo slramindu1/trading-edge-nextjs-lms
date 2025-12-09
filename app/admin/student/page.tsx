@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import UserList from "./components/user-list"
-import UserStats from "./components/user-stats"
-import { Search, Plus } from "lucide-react"
-
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import UserList from "./components/user-list";
+import UserStats from "./components/user-stats";
+import { Search, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function UsersPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   return (
     <div className=" bg-background">
@@ -19,16 +19,20 @@ export default function UsersPage() {
       <div className="sticky top-0 z-20 shadow-sm">
         <div className="mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
-            <div> 
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Users</h1>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                Users
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 Manage and monitor all users in your system
               </p>
             </div>
-            <Button className="gap-2 hover:bg-primary/90 transition-colors">
-              <Plus className="h-4 w-4" />
-              Add User
-            </Button>
+            <Link href={"student/create"}>
+              <Button className="gap-2 hover:bg-primary/90 transition-colors">
+                <Plus className="h-4 w-4" />
+                Add User
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -70,5 +74,5 @@ export default function UsersPage() {
         <UserList searchQuery={searchQuery} statusFilter={statusFilter} />
       </div>
     </div>
-  )
+  );
 }
