@@ -1,13 +1,8 @@
 // "use client";
 
-import { 
-  IconPlaylistX, 
+import {  
   IconTrendingDown, 
   IconTrendingUp,
-  IconUserPlus,
-  IconCoins,
-  IconBook,
-  IconChartBar
 } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"

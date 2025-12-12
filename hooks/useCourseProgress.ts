@@ -25,8 +25,8 @@ interface SectionType {
   id: string;
   title: string;
   slug: string;
-  fileKey: string;
-  smallDescription: string;
+  fileKey: string | null; // This allows null
+  smallDescription: string | null; // This allows null
   chapters?: ChapterType[];
 }
 

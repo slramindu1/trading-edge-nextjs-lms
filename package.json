@@ -52,6 +52,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
+    "geist": "^1.5.1",
     "html-react-parser": "^5.2.10",
     "input-otp": "^1.4.2",
     "iron-session": "^8.0.4",

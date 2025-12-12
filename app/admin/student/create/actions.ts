@@ -6,7 +6,9 @@ import { mailTransporter } from "@/lib/mail";
 import crypto from "crypto";
 import { getResetPasswordEmailHtml } from "@/lib/email-template";
 
-export async function AddStudent(data: StudentSchemaType): Promise<ApiResponse> {
+export async function AddStudent(
+  data: StudentSchemaType
+): Promise<ApiResponse> {
   const validation = StudentSchema.safeParse(data);
 
   if (!validation.success) {
@@ -23,7 +25,10 @@ export async function AddStudent(data: StudentSchemaType): Promise<ApiResponse> 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return { status: "error", message: "A user with this email already exists" };
+      return {
+        status: "error",
+        message: "A user with this email already exists",
+      };
     }
 
     // Create the user
@@ -77,15 +82,29 @@ export async function AddStudent(data: StudentSchemaType): Promise<ApiResponse> 
       }
     }
 
-    return { status: "success", message: "Student added & reset email sent successfully!" };
-
-  } catch (err: any) {
+    return {
+      status: "success",
+      message: "Student added & reset email sent successfully!",
+    };
+  } catch (err: unknown) {
     console.error("Database error:", err);
 
-    if (err.code === "P2002") {
-      return { status: "error", message: "A user with this email already exists" };
+    if (typeof err === "object" && err !== null && "code" in err) {
+      const prismaErr = err as { code?: string; message?: string };
+
+      if (prismaErr.code === "P2002") {
+        return {
+          status: "error",
+          message: "A user with this email already exists",
+        };
+      }
+
+      return {
+        status: "error",
+        message: prismaErr.message || "Failed to add student",
+      };
     }
 
-    return { status: "error", message: err.message || "Failed to add student" };
+    return { status: "error", message: "Unknown error occurred" };
   }
 }

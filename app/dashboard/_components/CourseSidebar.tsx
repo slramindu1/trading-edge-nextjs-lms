@@ -20,6 +20,13 @@ export function CourseSidebar({ course }: iAppProps) {
   const pathname = usePathname();
   const currentLessonId = pathname.split("/").pop();
 
+  const parts = pathname.split("/");
+  const currentChapterId = parts[5];
+
+  const currentChapter = course.chapters.find(
+    (ch) => ch.id === currentChapterId
+  );
+
   const { completedLessons, progressPercentage, totalLessons } =
     useCourseProgress({ courseData: course });
 
@@ -33,7 +40,7 @@ export function CourseSidebar({ course }: iAppProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="font-semibold text-base leading-tight truncate">
-              {course.title}
+              {currentChapter?.title}
             </h1>
             <p className="text-xs text-muted-foreground mt-1 truncate">
               Forex Trading
@@ -59,7 +66,7 @@ export function CourseSidebar({ course }: iAppProps) {
       <div className="py-4 pr-2 space-y-3">
         {course.chapters.map((chapter, chIndex) => (
           <Collapsible key={chapter.id} defaultOpen={chIndex === 0}>
-            <CollapsibleTrigger asChild>
+            {/* <CollapsibleTrigger asChild>
               <Button
                 variant="outline"
                 className="w-full flex items-center gap-2 p-3 h-auto text-left"
@@ -78,9 +85,9 @@ export function CourseSidebar({ course }: iAppProps) {
                   </p>
                 </div>
               </Button>
-            </CollapsibleTrigger>
+            </CollapsibleTrigger> */}
 
-            <CollapsibleContent className="mt-2 pl-4 border-l-2 space-y-2">
+            <CollapsibleContent className="mt-2 space-y-2">
               {/* --- FILTER TOPICS: show only ones with lessons --- */}
               {chapter.topics
                 .filter((topic) => topic.lessons.length > 0)
@@ -103,7 +110,7 @@ export function CourseSidebar({ course }: iAppProps) {
                       </Button>
                     </CollapsibleTrigger>
 
-                    <CollapsibleContent className="mt-1 pl-4 space-y-1">
+                    <CollapsibleContent className="mt-2 pl-4 space-y-1">
                       {topic.lessons.map((lesson) => (
                         <LessonItem
                           key={lesson.id}

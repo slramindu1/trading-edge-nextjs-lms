@@ -1,13 +1,10 @@
 import { EmptyState } from "@/components/general/EmptyState";
 import { getEnrolledCourses } from "../data/user/get-enrolled-courses";
-import { getAllCourses } from "../data/course/get-all-courses";
 import { CourseProgressCard } from "@/app/dashboard/_components/CourseProgressCard";
-import Link from "next/link";
 
 export default async function DashboardPage() {
   // Fetch all courses + enrolled data in parallel
-  const [courses, enrolledCourses] = await Promise.all([
-    getAllCourses(),
+  const [enrolledCourses] = await Promise.all([
     getEnrolledCourses(),
   ]);
 

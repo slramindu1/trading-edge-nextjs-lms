@@ -3,20 +3,12 @@
 import * as React from "react";
 import {
   IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
-  IconFolder,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -36,7 +28,6 @@ import Link from "next/link";
 
 import Logo from "@/app/logo-white.png";
 import Image from "next/image";
-import { UserRoundPlusIcon } from "lucide-react";
 
 const data = {
   user: {

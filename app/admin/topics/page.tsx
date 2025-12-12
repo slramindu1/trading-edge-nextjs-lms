@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AdminCourseCard, AdminCourseCardSkeleton } from "./_components/AdminCourseCard";
 import { EmptyState } from "@/components/general/EmptyState";
 import { Suspense } from "react";
-import { array } from "zod";
 
 export default function CoursesPage() {
   return (

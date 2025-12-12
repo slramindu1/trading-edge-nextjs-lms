@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionType, ChapterType } from "./types";
 
+
+
 interface ChapterProgressCardProps {
   section: SectionType; // full section
   chapter: ChapterType; // current chapter

@@ -1,12 +1,9 @@
 "use client";
 
 import {
-  IconCreditCard,
-  IconDashboard,
   IconDotsVertical,
   IconLogout,
   IconNotification,
-  IconUserCircle,
 } from "@tabler/icons-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,8 +22,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
-import { BookOpen, HomeIcon, Layers, ListChecks, Tv2 } from "lucide-react";
 
 export function NavUser({
   user,

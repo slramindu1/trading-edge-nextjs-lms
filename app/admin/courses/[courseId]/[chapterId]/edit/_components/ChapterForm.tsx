@@ -10,15 +10,28 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import Uploader from "@/components/file-uploader/Uploader";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 interface Props {
-  data: any;
+  data: ChapterSchemaType;
   chapterId: string;
   courseId: string;
 }
@@ -39,7 +52,9 @@ export function ChapterEditForm({ data, chapterId, courseId }: Props) {
 
   function onSubmit(values: ChapterSchemaType) {
     startTransition(async () => {
-      const { data: result, error } = await tryCatch(updateChapter(values, chapterId));
+      const { data: result, error } = await tryCatch(
+        updateChapter(values, chapterId)
+      );
 
       if (error) {
         toast.error("Unexpected error, try again later");
@@ -63,7 +78,9 @@ export function ChapterEditForm({ data, chapterId, courseId }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>Chapter Configurations</CardTitle>
-          <CardDescription>Update the chapter name, description, and thumbnail.</CardDescription>
+          <CardDescription>
+            Update the chapter name, description, and thumbnail.
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -118,7 +135,10 @@ export function ChapterEditForm({ data, chapterId, courseId }: Props) {
                   <FormItem>
                     <FormLabel>Thumbnail</FormLabel>
                     <FormControl>
-                      <Uploader onFileUpload={field.onChange} defaultValue={field.value} />
+                      <Uploader
+                        onFileUpload={field.onChange}
+                        defaultValue={field.value}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,18 +1,22 @@
 import { ThemeProvider } from "@/components/sidebar/theme-provider";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import "./globals.css";
-import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// REMOVE these lines - they use the old syntax:
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
+// 
+// const geistMono = GeistMono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// The variables from the new package are already set up
+// No need to configure them manually
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,10 +30,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-        
         </ThemeProvider>
       </body>
     </html>

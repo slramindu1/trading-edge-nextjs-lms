@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
 
 export async function adminGetChapter(chapterId: string) {
   const chapter = await prisma.chapter.findUnique({
@@ -21,9 +20,9 @@ export async function adminGetChapter(chapterId: string) {
   return {
     id: chapter.id,
     name: chapter.title,
-    description: chapter.description,
-    smallDescription: chapter.smallDescription,
-    fileKey: chapter.fileKey,      // <-- FIXED
+    description: chapter.description ?? undefined,
+    smallDescription: chapter.smallDescription ?? undefined,
+    fileKey: chapter.fileKey ?? undefined,   // <-- convert null to undefined
     courseId: chapter.sectionId,
   };
 }

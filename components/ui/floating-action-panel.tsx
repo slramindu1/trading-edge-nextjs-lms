@@ -8,7 +8,7 @@ const TRANSITION = {
   type: "spring",
   bounce: 0.1,
   duration: 0.4,
-};
+} as const;
 
 interface FloatingActionPanelContextType {
   isOpen: boolean;

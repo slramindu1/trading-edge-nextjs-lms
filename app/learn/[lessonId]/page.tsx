@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-export default async function ShareRedirectPage({ params }: any) {
+interface ShareRedirectPageProps {
+  params: {
+    lessonId: string;
+  };
+}
+
+export default async function ShareRedirectPage({ params }: ShareRedirectPageProps) {
   const { lessonId } = params;
 
   const lesson = await prisma.lesson.findUnique({
@@ -9,7 +15,7 @@ export default async function ShareRedirectPage({ params }: any) {
     include: {
       chapter: {
         include: {
-          section: true, // <-- this gives the course
+          section: true,
         },
       },
     },
@@ -19,10 +25,8 @@ export default async function ShareRedirectPage({ params }: any) {
     redirect("/404");
   }
 
-  // Extract correct IDs
   const chapterId = lesson.chapter.id;
-  const courseId = lesson.chapter.section.id; // <-- THIS IS THE REAL courseId
+  const courseId = lesson.chapter.section.id;
 
-  // Redirect student to lesson page
   redirect(`/student/courses/${courseId}/${chapterId}/${lesson.id}`);
 }

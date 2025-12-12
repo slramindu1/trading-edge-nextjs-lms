@@ -15,9 +15,9 @@ export async function getEnrolledCourses() {
       lname: true,
       email: true,
       enrollments: {
-        orderBy:{
-          id:"desc"
-        },  
+        orderBy: {
+          id: "desc",
+        },
         select: {
           section: {
             select: {
@@ -32,25 +32,34 @@ export async function getEnrolledCourses() {
                   id: true,
                   title: true,
                   position: true,
-                  lessons: {
+                  topics: {
                     select: {
                       id: true,
                       title: true,
                       position: true,
-                      thumbnailUrl: true,
-                      videoUrl: true,
-                      LessonProgress: {
-                        where: { userId: user.user.id },
+                      lessons: {
                         select: {
-                          LessonId: true,
-                          completed: true,
+                          id: true,
+                          title: true,
+                          position: true,
+                          thumbnailUrl: true,
+                          videoUrl: true,
+                          videoDuration: true, // required by your type
+                          LessonProgress: {
+                            where: { userId: user.user.id },
+                            select: {
+                              id: true,
+                              completed: true,
+                              LessonId: true,
+                            },
+                          },
                         },
+                        orderBy: { position: "asc" },
                       },
                     },
                     orderBy: { position: "asc" },
                   },
                 },
-                orderBy: { position: "asc" },
               },
             },
           },
@@ -62,7 +71,8 @@ export async function getEnrolledCourses() {
   return data;
 }
 
-
 export type EnrolledCourseType = Awaited<
   ReturnType<typeof getEnrolledCourses>
 >[0];
+
+export type SectionType = EnrolledCourseType["enrollments"][0]["section"];

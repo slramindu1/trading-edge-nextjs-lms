@@ -3,12 +3,13 @@ import { CourseSidebar } from "../../../../_components/CourseSidebar";
 import { getChapterData } from "@/app/data/course/get-chapter-data";
 
 interface iAppProps {
-  params: { slug: string; chapterId: string };
+  params: Promise<{ slug: string; chapterId: string }>;
   children: ReactNode;
 }
 
 export default async function ChapterLayout({ children, params }: iAppProps) {
-  const resolvedParams = params;
+  // Await the params promise
+  const resolvedParams = await params;
   const { chapterId } = resolvedParams;
 
   const chapter = await getChapterData(chapterId);

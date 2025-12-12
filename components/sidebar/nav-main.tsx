@@ -1,8 +1,6 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
+import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,7 +9,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { create } from "domain";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 

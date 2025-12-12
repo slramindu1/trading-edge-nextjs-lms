@@ -17,18 +17,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  chapterSchema,
-  ChapterSchemaType,
   lessonSchema,
   LessonSchemaType,
-  SectionSchema,
 } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { createChapter, createLesson } from "../actions";
+import { createLesson } from "../actions";
 import { toast } from "sonner";
 import { tryCatch } from "@/hooks/try-catch";
 

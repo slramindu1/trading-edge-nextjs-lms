@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
 import { lessonSchema, LessonSchemaType, topicSchema, TopicSchemaType } from "@/lib/zodSchemas";
-import { z } from "zod";
 
 /* ----------------------------------------
   Update Lesson Function

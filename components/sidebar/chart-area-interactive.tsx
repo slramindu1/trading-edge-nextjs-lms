@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Card,
-  CardAction,
+
   CardContent,
   CardDescription,
   CardHeader,
@@ -19,43 +17,40 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-
-import { date } from "zod";
-
 export const description = "An interactive area chart";
 
-const dummyEntrollmentsData = [
-  { date: "2025-11-01", enrollments: 12 },
-  { date: "2025-11-02", enrollments: 9 },
-  { date: "2025-11-03", enrollments: 14 },
-  { date: "2025-11-04", enrollments: 23 },
-  { date: "2025-11-05", enrollments: 13 },
-  { date: "2025-11-06", enrollments: 43 },
-  { date: "2025-11-07", enrollments: 43 },
-  { date: "2025-11-08", enrollments: 53 },
-  { date: "2025-11-09", enrollments: 63 },
-  { date: "2025-11-10", enrollments: 29 },
-  { date: "2025-11-11", enrollments: 37 },
-  { date: "2025-11-12", enrollments: 21 },
-  { date: "2025-11-13", enrollments: 18 },
-  { date: "2025-11-14", enrollments: 34 },
-  { date: "2025-11-15", enrollments: 25 },
-  { date: "2025-11-16", enrollments: 41 },
-  { date: "2025-11-17", enrollments: 28 },
-  { date: "2025-11-18", enrollments: 32 },
-  { date: "2025-11-19", enrollments: 12 },
-  { date: "2025-11-20", enrollments: 9 },
-  { date: "2025-11-21", enrollments: 14 },
-  { date: "2025-11-22", enrollments: 23 },
-  { date: "2025-11-23", enrollments: 13 },
-  { date: "2025-11-24", enrollments: 43 },
-  { date: "2025-11-25", enrollments: 43 },
-  { date: "2025-11-26", enrollments: 53 },
-  { date: "2025-11-27", enrollments: 63 },
-  { date: "2025-11-28", enrollments: 47 },
-  { date: "2025-11-29", enrollments: 36 },
-  { date: "2025-11-30", enrollments: 52 },
-];
+// const dummyEntrollmentsData = [
+//   { date: "2025-11-01", enrollments: 12 },
+//   { date: "2025-11-02", enrollments: 9 },
+//   { date: "2025-11-03", enrollments: 14 },
+//   { date: "2025-11-04", enrollments: 23 },
+//   { date: "2025-11-05", enrollments: 13 },
+//   { date: "2025-11-06", enrollments: 43 },
+//   { date: "2025-11-07", enrollments: 43 },
+//   { date: "2025-11-08", enrollments: 53 },
+//   { date: "2025-11-09", enrollments: 63 },
+//   { date: "2025-11-10", enrollments: 29 },
+//   { date: "2025-11-11", enrollments: 37 },
+//   { date: "2025-11-12", enrollments: 21 },
+//   { date: "2025-11-13", enrollments: 18 },
+//   { date: "2025-11-14", enrollments: 34 },
+//   { date: "2025-11-15", enrollments: 25 },
+//   { date: "2025-11-16", enrollments: 41 },
+//   { date: "2025-11-17", enrollments: 28 },
+//   { date: "2025-11-18", enrollments: 32 },
+//   { date: "2025-11-19", enrollments: 12 },
+//   { date: "2025-11-20", enrollments: 9 },
+//   { date: "2025-11-21", enrollments: 14 },
+//   { date: "2025-11-22", enrollments: 23 },
+//   { date: "2025-11-23", enrollments: 13 },
+//   { date: "2025-11-24", enrollments: 43 },
+//   { date: "2025-11-25", enrollments: 43 },
+//   { date: "2025-11-26", enrollments: 53 },
+//   { date: "2025-11-27", enrollments: 63 },
+//   { date: "2025-11-28", enrollments: 47 },
+//   { date: "2025-11-29", enrollments: 36 },
+//   { date: "2025-11-30", enrollments: 52 },
+// ];
 
 const chartConfig = {
   enrollments: {
@@ -125,7 +120,7 @@ const totalEnrollementsNumber = React.useMemo(
                 />
               }
             />
-            <Bar dataKey={"enrollments"} fill="var(==color-enrollments)"/>
+            <Bar dataKey={"enrollments"} fill="#004be0"   radius={[4, 4, 0, 0]}/>
           </BarChart>
         </ChartContainer>
       </CardContent>

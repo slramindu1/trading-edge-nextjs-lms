@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
 import { chapterSchema, ChapterSchemaType } from "@/lib/zodSchemas";
-import { revalidatePath } from "next/cache";
 
 export async function updateChapter(values: ChapterSchemaType, chapterId: string): Promise<ApiResponse> {
   try {

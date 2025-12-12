@@ -2,14 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  rectIntersection,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
@@ -24,32 +16,37 @@ import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   ChevronDown,
   ChevronRight,
-  DeleteIcon,
   FileText,
-  Ghost,
   GripVertical,
-  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import Link from "next/link";
 import { toast } from "sonner";
-import { error } from "console";
-import { set } from "zod";
 import { reorderChapters, reorderLessons } from "../actions";
 import { NewchapterModal } from "./NewChapterModal";
 import { NewLessonModal } from "./NewLessonModal";
 import { DeleteLesson } from "./DeleteLesson";
 import { DeleteChapter } from "./DeleteChapter";
 import { ShareLesson } from "./ShareLesson";
-
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  rectIntersection,
+  useSensor,
+  useSensors,
+  DragEndEvent, // ← ADD THIS
+  DraggableSyntheticListeners, // ← ADD THIS
+} from "@dnd-kit/core";
 interface iAppProps {
   data: AdminCourseSingularType;
 }
 
 interface SortableItemProps {
   id: string;
-  children: (listeners: any) => ReactNode;
+
+  children: (listeners: DraggableSyntheticListeners) => ReactNode; // ← FIXED
   className?: string;
   data?: {
     type: "chapter" | "lesson";
@@ -119,7 +116,7 @@ export function SubTopicStrucutre({ data }: iAppProps) {
     );
   }
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     // if (!over) return;
     // if (active.id !== over.id) {
@@ -380,8 +377,8 @@ export function SubTopicStrucutre({ data }: iAppProps) {
                                       </Button>
                                       <FileText className="size-4" />
                                       {/* <Link
-                                        href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
-                                      > */}
+                                          href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
+                                        > */}
                                       <Link
                                         href={`/admin/courses/${data.id}/${item.id}/${lesson.id}`}
                                       >

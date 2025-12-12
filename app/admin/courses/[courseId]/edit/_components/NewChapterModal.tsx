@@ -19,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import {
   chapterSchema,
   ChapterSchemaType,
-  SectionSchema,
 } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";

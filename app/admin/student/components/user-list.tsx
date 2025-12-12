@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MoreVertical, Mail, Trash2, Edit, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,18 +30,19 @@ interface UserListProps {
 export default function UserList({ searchQuery, statusFilter }: UserListProps) {
   const [users, setUsers] = useState<User[]>([]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     const params = new URLSearchParams();
     if (searchQuery) params.append("searchQuery", searchQuery);
     if (statusFilter) params.append("statusFilter", statusFilter);
+
     const res = await fetch(`/api/users?${params.toString()}`);
     const data = await res.json();
     setUsers(data);
-  };
+  }, [searchQuery, statusFilter]);
 
   useEffect(() => {
     fetchUsers();
-  }, [searchQuery, statusFilter]);
+  }, [fetchUsers]);
 
   const statusIdToString = (id: number) =>
     id === 1

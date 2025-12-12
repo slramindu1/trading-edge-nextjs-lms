@@ -1,7 +1,7 @@
 
 import { SiteHeader } from "@/components/sidebar/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Children, ReactNode } from "react";
+import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { AppSidebar } from "./_components/DashboardAppSidebar";
 
