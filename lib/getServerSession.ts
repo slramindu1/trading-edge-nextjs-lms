@@ -3,7 +3,7 @@ import { PrismaClient } from "./generated/prisma";
 
 const prisma = new PrismaClient();
 
-export async function getSession() {
+export async function getServerSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get("session_token")?.value;
 
@@ -21,8 +21,8 @@ export async function getSession() {
     user: {
       id: user.id,
       email: user.email,
-      fname: user.fname,  // Add this
-      lname: user.lname,  // Add this
+      fname: user.fname,
+      lname: user.lname,
       user_type_id: user.user_type_id,
       role: user.user_type_id === 2 ? "admin" : "user",
     },

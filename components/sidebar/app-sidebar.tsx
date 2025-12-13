@@ -2,14 +2,12 @@
 
 import * as React from "react";
 import {
-  IconCamera,
   IconDashboard,
-  IconFileAi,
-  IconFileDescription,
   IconHelp,
   IconSearch,
   IconSettings,
   IconUsers,
+  type Icon as TablerIcon,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -29,104 +27,68 @@ import Link from "next/link";
 import Logo from "@/app/logo-white.png";
 import Image from "next/image";
 
-const data = {
-  user: {
-    name: "Trading Edge",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+// Define props interface
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user?: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
+
+// Remove hardcoded data and define nav items separately
+const navMainItems = [
+  {
+    title: "Dashboard",
+    url: "/admin",
+    icon: IconDashboard as TablerIcon,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/admin",
-      icon: IconDashboard,
-    },
-    {
-      title: "Students",
-      url: "admin/student/",
-      icon: IconUsers,
-    },
+  {
+    title: "Students",
+    url: "/admin/student", // Fixed: Added leading slash
+    icon: IconUsers as TablerIcon,
+  },
+  {
+    title: "Announcements",
+    url: "#",
+    icon: IconUsers as TablerIcon,
+  },
+  {
+    title: "NewsLetter",
+    url: "#",
+    icon: IconUsers as TablerIcon,
+  },
+];
 
-    {
-      title: "Announcements",
-      url: "#",
-      icon: IconUsers,
-    },
-    {
-      title: "NewsLetter",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
+const navSecondaryItems = [
+  {
+    title: "Settings",
+    url: "#",
+    icon: IconSettings as TablerIcon,
+  },
+  {
+    title: "Get Help",
+    url: "#",
+    icon: IconHelp as TablerIcon,
+  },
+  {
+    title: "Search",
+    url: "#",
+    icon: IconSearch as TablerIcon,
+  },
+];
 
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
+// Default user data as fallback
+const defaultUser = {
+  name: "Admin User",
+  email: "admin@example.com",
+  avatar: "/avatars/shadcn.jpg",
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  // Use provided user or default
+  const currentUser = user || defaultUser;
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -136,21 +98,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="#">
-                <Image src={Logo} alt="logo" width={196} height={186} />
-                {/* <span className="text-base font-semibold">Acme Inc.</span> */}
+              <Link href="/admin">
+                <Image 
+                  src={Logo} 
+                  alt="logo" 
+                  width={196} 
+                  height={186}
+                  className="h-12 w-auto"
+                />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMainItems} />
+        <NavSecondary items={navSecondaryItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={currentUser} />
       </SidebarFooter>
     </Sidebar>
   );

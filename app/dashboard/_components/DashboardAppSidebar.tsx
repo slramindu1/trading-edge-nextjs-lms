@@ -29,23 +29,21 @@ import Link from "next/link";
 import Logo from "@/app/logo-white.png";
 import Image from "next/image";
 
-const data = {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: {
-    name: "Trading Edge",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
+
+const data = {
   navMain: [
     {
       title: "Dashboard",
       url: "/dashboard",
       icon: IconDashboard,
     },
-    // {
-    //   title: "Section",
-    //   url: "admin/topics",
-    //   icon: IconListDetails,
-    // },
   ],
 
   navClouds: [
@@ -115,7 +113,7 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -127,7 +125,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href="#">
                 <Image src={Logo} alt="logo" width={196} height={186} />
-                {/* <span className="text-base font-semibold">Acme Inc.</span> */}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -135,11 +132,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -30,3 +30,18 @@ export interface SectionType {
   chapters: ChapterType[];
 }
 
+export type User = {
+  id: string;
+  email: string;
+  fname: string;
+  lname: string;
+  user_type_id: number;
+  role?: string;
+  // Add other fields as needed
+};
+
+// Update your session type
+export type Session = {
+  user: User;
+  expires?: string;
+};
