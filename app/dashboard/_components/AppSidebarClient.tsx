@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import {
-  IconCamera,
   IconDashboard,
-  IconFileAi,
-  IconFileDescription,
   IconHelp,
   IconSearch,
   IconSettings,
@@ -30,12 +27,8 @@ import Link from "next/link";
 import Logo from "@/app/logo-white.png";
 import Image from "next/image";
 
-// Map icon names to actual TablerIcon components with proper typing
 const iconMap: Record<string, TablerIcon> = {
   IconDashboard: IconDashboard,
-  IconCamera: IconCamera,
-  IconFileDescription: IconFileDescription,
-  IconFileAi: IconFileAi,
   IconSettings: IconSettings,
   IconHelp: IconHelp,
   IconSearch: IconSearch,
@@ -57,7 +50,6 @@ interface AppSidebarClientProps {
     avatar: string;
   };
   navMain: NavItem[];
-  navClouds: NavItem[];
   navSecondary: NavItem[];
 }
 
@@ -65,23 +57,18 @@ export function AppSidebarClient({
   variant, 
   user, 
   navMain, 
-  navClouds, 
   navSecondary 
 }: AppSidebarClientProps) {
-  // Convert nav items with actual icon components, ensuring they match TablerIcon type
   const processedNavMain = navMain.map(item => ({
     title: item.title,
     url: item.url,
-    // Cast to TablerIcon type
-    icon: iconMap[item.icon] as TablerIcon || IconDashboard,
+    icon: iconMap[item.icon] || IconDashboard,
   }));
-
 
   const processedNavSecondary = navSecondary.map(item => ({
     title: item.title,
     url: item.url,
-    // Cast to TablerIcon type
-    icon: iconMap[item.icon] as TablerIcon || IconDashboard,
+    icon: iconMap[item.icon] || IconDashboard,
   }));
 
   return (
@@ -93,7 +80,7 @@ export function AppSidebarClient({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="#">
+              <Link href="/dashboard">
                 <Image src={Logo} alt="logo" width={196} height={186} />
               </Link>
             </SidebarMenuButton>

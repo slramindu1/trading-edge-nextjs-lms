@@ -6,7 +6,7 @@ export interface IconProps {
   size?: number | string;
   stroke?: number;
   color?: string;
-  [key: string]: any; // For any additional props
+  [key: string]: unknown; // For any additional props
 }
 
 export type NavItem = {
