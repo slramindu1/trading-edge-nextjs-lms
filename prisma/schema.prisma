@@ -37,7 +37,11 @@ model User {
   status_id          Int
   aboutMe            String?       @db.VarChar(500)
   student_type       StudentType   @default(FREE)
-
+  
+  // New fields for profile completion
+  profile_completed  Boolean       @default(false)
+  profile_updated_at DateTime?
+  
   enrollments        Enrollment[]
   LessonProgress     LessonProgress[]
 }
