@@ -4,25 +4,24 @@ import { getSession } from "@/lib/getSession";
 import { EmptyState } from "@/components/general/EmptyState";
 import { getEnrolledCourses } from "../data/user/get-enrolled-courses";
 import { CourseProgressCard } from "@/app/dashboard/_components/CourseProgressCard";
+import { DiscordCard } from "./_components/DiscordCard";
 
 export default async function DashboardPage() {
   // Get user session
   const session = await getSession();
-  
+
   // If no session, redirect to login
   if (!session) {
     redirect("/sign-in?redirect=/dashboard");
   }
-  
+
   // If profile not completed, redirect to complete-profile
   if (!session.user.profile_completed) {
     redirect(`/complete-profile?redirect=${encodeURIComponent("/dashboard")}`);
   }
-  
+
   // Now fetch courses since user is authenticated and profile is complete
-  const [enrolledCourses] = await Promise.all([
-    getEnrolledCourses(),
-  ]);
+  const [enrolledCourses] = await Promise.all([getEnrolledCourses()]);
 
   return (
     <>
@@ -34,9 +33,9 @@ export default async function DashboardPage() {
         <p className="text-muted-foreground">
           Here you can see all the courses you have access to
         </p> */}
-        
-        {/* Profile completion status badge */}
-        {/* <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm mt-2 w-fit">
+
+      {/* Profile completion status badge */}
+      {/* <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm mt-2 w-fit">
           <span className="h-2 w-2 bg-green-500 rounded-full"></span>
           Profile Completed
         </div> */}
@@ -45,7 +44,7 @@ export default async function DashboardPage() {
       {/* Courses Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Your Enrolled Courses</h2>
-        
+
         {enrolledCourses.length === 0 ? (
           <EmptyState
             title="No Courses Enrolled"
@@ -63,11 +62,10 @@ export default async function DashboardPage() {
                 />
               ))
             )}
+            <DiscordCard />
           </div>
         )}
       </div>
-
-
     </>
   );
 }

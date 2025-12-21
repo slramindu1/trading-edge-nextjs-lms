@@ -2,8 +2,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,8 +32,9 @@ interface CompleteProfileFormProps {
   };
 }
 
-export default function CompleteProfileForm({ user }: CompleteProfileFormProps) {
-  const router = useRouter();
+export default function CompleteProfileForm({
+  user,
+}: CompleteProfileFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     mobile: "",
@@ -36,29 +42,31 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
     gender_id: "1",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (value: string) => {
-    setFormData(prev => ({ ...prev, gender_id: value }));
+    setFormData((prev) => ({ ...prev, gender_id: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate mobile number (basic validation)
     if (!formData.mobile.trim()) {
       toast.error("Please enter your mobile number");
       return;
     }
-    
+
     if (formData.mobile.trim().length < 10) {
       toast.error("Please enter a valid mobile number");
       return;
     }
-    
+
     setIsLoading(true);
 
     try {
@@ -91,24 +99,29 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
 
       if (response.ok && data.success) {
         toast.success("Profile completed successfully!");
-        
+
         // Wait a moment before redirecting to show success message
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Get redirect URL from query params or go to dashboard
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get("redirect") || "/dashboard";
-        
+
         // Force a hard navigation to ensure session cookies are updated
         window.location.href = redirectTo;
       } else {
         toast.error(data.message || data.error || "Failed to update profile");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Profile update error:", error);
-      
-      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        toast.error("Network error. Please check your connection and try again.");
+
+      if (
+        error instanceof TypeError &&
+        error.message.includes("Failed to fetch")
+      ) {
+        toast.error(
+          "Network error. Please check your connection and try again."
+        );
       } else {
         toast.error("An error occurred. Please try again.");
       }
@@ -132,7 +145,7 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
             Welcome, {user.fname}! Please complete your profile to continue.
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
@@ -157,7 +170,7 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
                   className="bg-muted cursor-not-allowed"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="lname">Last Name</Label>
                 <Input
@@ -184,7 +197,7 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
                 className={isLoading ? "bg-muted" : ""}
               />
               <p className="text-xs text-muted-foreground">
-                We'll use this for important notifications
+                We&apos;ll use this for important notifications
               </p>
             </div>
 
@@ -225,9 +238,13 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
                 <p className="text-xs text-muted-foreground">
                   Optional - Share something about yourself
                 </p>
-                <p className={`text-xs ${
-                  formData.aboutMe.length >= 480 ? "text-amber-600" : "text-muted-foreground"
-                }`}>
+                <p
+                  className={`text-xs ${
+                    formData.aboutMe.length >= 480
+                      ? "text-amber-600"
+                      : "text-muted-foreground"
+                  }`}
+                >
                   {formData.aboutMe.length}/500
                 </p>
               </div>
@@ -250,7 +267,7 @@ export default function CompleteProfileForm({ user }: CompleteProfileFormProps) 
                   "Complete Profile"
                 )}
               </Button>
-              
+
               <div className="mt-4 space-y-2">
                 <p className="text-xs text-muted-foreground text-center">
                   * Required fields must be filled to continue

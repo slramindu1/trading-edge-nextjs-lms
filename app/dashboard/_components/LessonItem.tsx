@@ -1,9 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Check, Play, FileText } from "lucide-react";
 import Link from "next/link";
-
+import "@fortawesome/fontawesome-free/css/all.min.css";
 interface iAppProps {
   lesson: {
     id: string;
@@ -43,7 +42,7 @@ export function LessonItem({
     >
       {/* Left: icon + text */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div
+        {/* <div
           className={cn(
             "size-6 rounded-md flex items-center justify-center shrink-0 transition",
             completed
@@ -66,7 +65,7 @@ export function LessonItem({
               )}
             />
           )}
-        </div>
+        </div> */}
 
         <div className="flex-1 min-w-0">
           <p
@@ -77,16 +76,44 @@ export function LessonItem({
                 : "text-foreground"
             )}
           >
-            {lesson.position}. {lesson.title}
+             {lesson.title}
           </p>
           {/* Video duration or PDF label */}
           {!completed && (
-            <p className="text-[10px] text-muted-foreground mt-1">
-              {lesson.lessonType === "PDF"
-                ? "PDF"
-                : lesson.lessonType === "VIDEO"
-                ? `VIDEO ${lesson.videoDuration || ""}`
-                : ""}
+            // <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+            //   {lesson.lessonType === "PDF" ? (
+            //     <>
+            //       {/* <FileText className="size-2.5 fill-current" /> */}
+            //       <i className="fas fa-file-pdf"></i>
+            //       <span>PDF</span>
+            //     </>
+            //   ) : lesson.lessonType === "VIDEO" ? (
+            //     <>
+            //       {/* <Play
+            //         className={cn(
+            //           "size-3.5 fill-current",
+            //           isActive ? "text-muted-foreground" : ""
+            //         )}
+            //       /> */}
+            //        <i className="fas fa-video"></i>
+            //       <span>VIDEO {lesson.videoDuration || ""}</span>
+            //     </>
+            //   ) : null}
+            // </p>
+            <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1.5 leading-none">
+              {lesson.lessonType === "PDF" ? (
+                <>
+                  <i className="fas fa-file-pdf text-[11px] relative top-[0.5px] opacity-80"></i>
+                  <span className="leading-none">PDF</span>
+                </>
+              ) : lesson.lessonType === "VIDEO" ? (
+                <>
+                  <i className="fas fa-video text-[11px] relative top-[0.5px] opacity-80"></i>
+                  <span className="leading-none">
+                    VIDEO {lesson.videoDuration || ""}
+                  </span>
+                </>
+              ) : null}
             </p>
           )}
 

@@ -1,16 +1,18 @@
 "use client";
 import { CourseSidebarDataType } from "@/app/data/course/get-course-sidebar-data";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
-import { ChevronDown, Play } from "lucide-react";
+import { ArrowLeft, ChevronDown, Play } from "lucide-react";
 import { LessonItem } from "./LessonItem";
 import { usePathname } from "next/navigation";
 import { useCourseProgress } from "@/hooks/use-course-progress";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface iAppProps {
   course: CourseSidebarDataType["course"];
@@ -33,7 +35,17 @@ export function CourseSidebar({ course }: iAppProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="pb-4 pr-4 border-b border-border">
+      <Link
+        href={`/dashboard/sections/${course.slug}/chapters`}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "absolute top-4 left-4 mt-13"
+        )}
+      >
+        <ArrowLeft className="size-4 mr-2" />
+        Back
+      </Link>
+      <div className="pb-4 pr-4 border-b border-border mt-12">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <Play className="w-5 h-5 text-primary" />
@@ -87,7 +99,12 @@ export function CourseSidebar({ course }: iAppProps) {
               </Button>
             </CollapsibleTrigger> */}
 
-            <CollapsibleContent className="mt-2 space-y-2">
+            <CollapsibleContent
+              className="mt-2 space-y-2  overflow-hidden
+    transition-all
+    data-[state=open]:animate-collapsible-down
+    data-[state=closed]:animate-collapsible-up"
+            >
               {/* --- FILTER TOPICS: show only ones with lessons --- */}
               {chapter.topics
                 .filter((topic) => topic.lessons.length > 0)
@@ -96,7 +113,7 @@ export function CourseSidebar({ course }: iAppProps) {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="outline"
-                        className="w-full flex items-center gap-2 p-3 h-auto text-left"
+                        className="w-full flex items-center gap-2 px-3 py-2 h-auto text-left"
                       >
                         <ChevronDown className="w-4 h-4 text-primary" />
                         <div className="flex-1">
@@ -110,7 +127,12 @@ export function CourseSidebar({ course }: iAppProps) {
                       </Button>
                     </CollapsibleTrigger>
 
-                    <CollapsibleContent className="mt-2 pl-4 space-y-1">
+                    <CollapsibleContent
+                      className="mt-2 pl-4 space-y-1  overflow-hidden
+    transition-all
+    data-[state=open]:animate-collapsible-down
+    data-[state=closed]:animate-collapsible-up"
+                    >
                       {topic.lessons.map((lesson) => (
                         <LessonItem
                           key={lesson.id}

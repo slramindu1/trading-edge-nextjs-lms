@@ -1,68 +1,57 @@
 "use client";
 
-import { SectionType } from "@/app/data/user/get-enrolled-courses";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCourseProgress } from "@/hooks/use-course-progress";
 import Image from "next/image";
 import Link from "next/link";
 
-interface iAppProps {
-  data: SectionType; // <-- You are receiving only the SECTION
-}
-
-export function CourseProgressCard({ data }: iAppProps) {
-  const section = data; // <-- FIX: This is already the section
-
-  const { totalLessons, completedLessons, progressPercentage } =
-    useCourseProgress({ courseData: section });
-
+export function DiscordCard() {
   return (
     <Card className="group relative py-0 gap-0">
       <Link
-        href={`/dashboard/sections/${section.slug}/chapters`}
+        href={`https://discord.com/invite/u4vNjJ2DyX`}
+        className="font-medium text-lg line-clamp-2 hover:underline group-hover:text-primary transition-colors"
       >
         <Image
-          src={section.fileKey}
+          src="/uploads/tradingedge95260.png"
           alt="Course Thumbnail"
           width={600}
           height={400}
           className="w-full rounded-t-lg aspect-video h-full object-cover"
         />
       </Link>
+
       <CardContent className="p-4">
         <Link
-          href={`/dashboard/${section.slug}`}
+          href={`https://discord.com/invite/u4vNjJ2DyX`}
           className="font-medium text-lg line-clamp-2 hover:underline group-hover:text-primary transition-colors"
         >
-          {section.title}
+          Join Discord Server
         </Link>
 
         <p className="line-clamp-2 text-sm text-muted-foreground leading-tight mt-2">
-          {section.smallDescription}
+          Connect with fellow learners and get support in our Discord community!
         </p>
 
         {/* --- Progress UI --- */}
         <div className="mt-4">
           <div className="flex justify-between items-center text-sm text-muted-foreground">
             <span>Your Progress</span>
-            <span className="font-medium">{progressPercentage}%</span>
+            <span className="font-medium">100%</span>
           </div>
 
           <div className="relative w-full bg-muted rounded-full h-2 mt-1 overflow-hidden">
             <div
               className="h-2 bg-primary transition-all"
-              style={{ width: `${progressPercentage}%` }}
+              style={{ width: `$100%` }}
             />
           </div>
 
-          <p className="text-sm mt-2 font-medium">
-            {completedLessons}/{totalLessons} Lessons Completed
-          </p>
+          <p className="text-sm mt-2 font-medium">Link Clicked</p>
         </div>
 
         <Link
-          href={`/dashboard/sections/${section.slug}/chapters`}
+          href={`https://discord.com/invite/u4vNjJ2DyX`}
           // href={`/dashboard/Chapters`}
           className={buttonVariants({
             className: "w-full flex items-center justify-center gap-2 mt-4",

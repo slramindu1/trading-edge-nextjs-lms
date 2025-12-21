@@ -8,8 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionType, ChapterType } from "./types";
 
-
-
 interface ChapterProgressCardProps {
   section: SectionType; // full section
   chapter: ChapterType; // current chapter
@@ -27,13 +25,17 @@ export function ChapterProgressCard({
 
   return (
     <Card className="group relative py-0 gap-0">
-      <Image
-        src={thumbnail}
-        alt={chapter.title}
-        width={600}
-        height={400}
-        className="w-full rounded-t-lg aspect-video h-full object-cover"
-      />
+      <Link
+        href={`/dashboard/sections/${section.slug}/chapters/${chapter.id}`}
+      >
+        <Image
+          src={thumbnail}
+          alt={chapter.title}
+          width={600}
+          height={400}
+          className="w-full rounded-t-lg aspect-video h-full object-cover"
+        />
+      </Link>
 
       <CardContent className="p-4">
         <h3 className="font-medium text-lg">{chapter.title}</h3>
@@ -72,4 +74,3 @@ export function ChapterProgressCard({
     </Card>
   );
 }
-

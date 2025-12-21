@@ -35,17 +35,21 @@ export async function POST(request: NextRequest) {
         profile_completed: updatedUser.profile_completed,
       },
     });
-
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Profile completion error:", error);
-    
-    if (error.code === "P2025") {
+
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "P2025"
+    ) {
       return NextResponse.json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
