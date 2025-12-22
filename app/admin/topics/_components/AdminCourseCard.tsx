@@ -75,6 +75,7 @@ export function AdminCourseCard({ data }: iAppProps) {
         width={600}
         height={400}
         className="w-full rounded-t-lg aspect-video h-full object-cover"
+        unoptimized
       />
       <CardContent className="p-4">
         <Link
@@ -124,7 +125,7 @@ export function AdminCourseCardSkeleton() {
             <Skeleton className="h-4 w-10 rounded" />
           </div>
         </div>
-        <Skeleton className="mt-4 w-full h-10 rounded"/>
+        <Skeleton className="mt-4 w-full h-10 rounded" />
       </CardContent>
     </Card>
   );

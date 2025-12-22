@@ -18,6 +18,7 @@ export function DiscordCard() {
           width={600}
           height={400}
           className="w-full rounded-t-lg aspect-video h-full object-cover"
+          unoptimized
         />
       </Link>
 

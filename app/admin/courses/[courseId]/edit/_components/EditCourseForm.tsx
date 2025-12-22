@@ -67,7 +67,7 @@ export function EditCourseForm({ data }: iAppProps) {
       if (result.status === "success") {
         toast.success(result.message);
         form.reset();
-        router.push("/admin/courses");
+        router.push("/admin");
       } else if (result.status === "error") {
         toast.error(result.message);
       }

@@ -82,7 +82,7 @@ const navSecondaryItems = [
 const defaultUser = {
   name: "Admin User",
   email: "admin@example.com",
-  avatar: "/avatars/shadcn.jpg",
+  avatar: "/",
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
@@ -100,7 +100,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             >
               <Link href="/admin">
                 <Image 
-                  src={Logo} 
+                  src={'/'} 
                   alt="logo" 
                   width={196} 
                   height={186}

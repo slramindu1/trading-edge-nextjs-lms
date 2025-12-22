@@ -19,15 +19,14 @@ export function CourseProgressCard({ data }: iAppProps) {
 
   return (
     <Card className="group relative py-0 gap-0">
-      <Link
-        href={`/dashboard/sections/${section.slug}/chapters`}
-      >
+      <Link href={`/dashboard/sections/${section.slug}/chapters`}>
         <Image
           src={section.fileKey}
           alt="Course Thumbnail"
           width={600}
           height={400}
           className="w-full rounded-t-lg aspect-video h-full object-cover"
+          unoptimized
         />
       </Link>
       <CardContent className="p-4">
