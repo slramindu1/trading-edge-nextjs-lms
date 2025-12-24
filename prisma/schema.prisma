@@ -3,6 +3,7 @@ generator client {
   output   = "../lib/generated/prisma"
 }
 
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -21,6 +22,13 @@ enum CourseStatus {
   Published
   Archived
 }
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED  
+}
+
 
 model User {
   id                 String        @id @default(uuid())
@@ -41,6 +49,11 @@ model User {
   // New fields for profile completion
   profile_completed  Boolean       @default(false)
   profile_updated_at DateTime?
+
+    
+  // New field for payments
+  is_paid            Boolean       @default(false)
+  payment_date       DateTime?
   
   enrollments        Enrollment[]
   LessonProgress     LessonProgress[]
@@ -87,6 +100,34 @@ model Topic {
   chapterId String
 
   lessons   Lesson[]
+}
+model Coupon {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  discount  Float
+  maxUses   Int?
+  usedCount Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+  
+  @@map("coupons")
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  email       String
+  fullName    String
+  amount      Float
+  discount    Float        @default(0)
+  finalAmount Float
+  couponCode  String?
+  paymentDate DateTime     @default(now())
+  slipUrl     String?
+  status      PaymentStatus @default(PENDING)  // ✅ Fixed: using enum
+  completedAt DateTime?    
+  notes       String?      
+  @@map("payments")
 }
 
 model Lesson {
@@ -135,3 +176,4 @@ model LessonProgress{
 
   @@unique([userId,LessonId])
 }
+
